@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <!-- viewport-fit=cover は iPhone の丸い角・ホームバーの領域まで使うための指定 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Famipedia（ファミペディア）</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     上部バー（スマホでは細く、PCでは広く）
+     ============================================================ -->
+<header class="topbar">
+  <div class="topbar-brand">
+
+    <!-- ロゴ。白い角丸タイルに明朝体の F -->
+    <span class="logo-mark" aria-hidden="true">F</span>
+
+    <!-- 本家と同じく、明朝の二段組み -->
+    <span class="logo-text">
+      <strong>ファミペディア</strong>
+      <small>家族の百科事典</small>
+    </span>
+
+  </div>
+  <div class="topbar-actions">
+    <button id="btn-export" class="link-btn">書き出す</button>
+    <button id="btn-clear"  class="link-btn">最初から</button>
+  </div>
+</header>
+
+<!-- ============================================================
+     本体。スマホでは1枚ずつ、PCでは横並びで表示される
+     ============================================================ -->
+<div class="app">
+
+  <!-- ---------- 質問パネル（スマホの主役） ---------- -->
+  <section class="pane pane-ask is-active" id="pane-ask">
+
+    <!-- 進み具合のバー -->
+    <div class="progress" aria-hidden="true">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="ask-wrap">
+
+      <div class="ask-meta">
+        <span class="ask-step" id="ask-step">質問 1</span>
+        <button id="btn-skip" class="link-btn small">飛ばす</button>
+      </div>
+
+      <!-- 祖父母に見せる／読み上げる質問 -->
+      <p class="ask-question" id="ask-question">読み込み中…</p>
+      <p class="ask-hint" id="ask-hint"></p>
+
+      <!-- AIが提案した追加質問のときに出るしるし -->
+      <p class="ask-badge" id="ask-badge" hidden>AIからの追加質問</p>
+
+      <label class="sr-only" for="ask-input">聞いた話を入力</label>
+      <textarea
+        id="ask-input"
+        class="ask-input"
+        rows="6"
+        placeholder="聞いた話をそのまま打ち込んでOK。&#10;話し言葉のままで大丈夫です。"
+      ></textarea>
+
+      <p class="ask-tip">
+        入力した内容はAIが整えて、ページの文章になります。
+      </p>
+
+    </div>
+
+    <!-- 画面下に固定される操作バー -->
+    <div class="actionbar">
+      <button id="btn-save" class="btn btn-primary">
+        <span class="btn-label">記録する</span>
+        <span class="btn-spinner" hidden></span>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- ---------- 出来上がるページ ---------- -->
+  <section class="pane pane-doc" id="pane-doc">
+    <article class="doc">
+
+      <h1 class="doc-title" id="page-title">名前を入力してください</h1>
+      <p class="doc-from">出典: 家族の記憶『ファミペディア（Famipedia）』</p>
+
+      <!-- 基礎情報ボックス -->
+      <aside class="infobox">
+        <div class="infobox-title" id="info-name">—</div>
+        <button type="button" class="infobox-photo" id="photo-slot">
+          <span class="photo-hint">写真を追加</span>
+        </button>
+        <input type="file" id="photo-input" accept="image/*" hidden />
+        <table class="infobox-table">
+          <tbody>
+            <tr><th>生まれ</th><td id="info-birth">—</td></tr>
+            <tr><th>出身地</th><td id="info-place">—</td></tr>
+            <tr><th>仕事</th><td id="info-job">—</td></tr>
+            <tr><th>家族</th><td id="info-family">—</td></tr>
+          </tbody>
+        </table>
+      </aside>
+
+      <section class="doc-section">
+        <h2>概要</h2>
+        <div class="doc-body" id="body-summary">
+          <p class="empty">まだ記録がありません。</p>
+        </div>
+      </section>
+
+      <section class="doc-section">
+        <h2>年表</h2>
+        <div class="doc-body" id="body-timeline">
+          <p class="empty">まだ記録がありません。</p>
+        </div>
+      </section>
+
+      <section class="doc-section">
+        <h2>思い出・エピソード</h2>
+        <div class="doc-body" id="body-episode">
+          <p class="empty">まだ記録がありません。</p>
+        </div>
+      </section>
+
+      <section class="doc-section">
+        <h2>伝えたいこと</h2>
+        <div class="doc-body" id="body-message">
+          <p class="empty">まだ記録がありません。</p>
+        </div>
+      </section>
+
+      <p class="doc-foot">
+        記録 <span id="answer-count">0</span> 件 ／ 最終更新 <span id="last-updated">—</span>
+      </p>
+
+    </article>
+  </section>
+
+</div>
+
+<!-- ============================================================
+     下部タブ（スマホのみ表示。PCでは消える）
+     ============================================================ -->
+<nav class="tabbar">
+  <button class="tab is-active" data-pane="ask">
+    <span class="tab-label">質問</span>
+  </button>
+  <button class="tab" data-pane="doc">
+    <span class="tab-label">ページ</span>
+    <span class="tab-badge" id="tab-badge" hidden>0</span>
+  </button>
+</nav>
+
+<!-- 保存完了などの短い通知 -->
+<div class="toast" id="toast" hidden></div>
+
+<!-- ============================================================
+     確認ダイアログ
+     ブラウザ標準の confirm() は、埋め込み表示だと出ないことがある。
+     そのため自前で用意しています。
+     ============================================================ -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <p class="modal-title" id="modal-title">記録をすべて消します</p>
+    <p class="modal-text">
+      この操作は取り消せません。<br />
+      残しておきたい場合は、先に「書き出す」で保存してください。
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="modal-cancel">やめる</button>
+      <button type="button" class="btn btn-danger" id="modal-ok">すべて消す</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     書き出し
+     ページからのファイル保存は、埋め込み表示だと許可されない。
+     そのため、本文を出してコピーしてもらう形にしています。
+     ============================================================ -->
+<div class="modal" id="export-modal" hidden>
+  <div class="modal-box modal-box-wide">
+    <p class="modal-title">記録を書き出す</p>
+    <p class="modal-text">
+      下の文章をコピーして、メモ帳やメールに貼り付けてください。
+    </p>
+    <textarea class="export-text" id="export-text" readonly rows="9"></textarea>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="export-close">閉じる</button>
+      <button type="button" class="btn btn-primary" id="export-copy">コピー</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./src/main.ts"></script>
+</body>
+</html>

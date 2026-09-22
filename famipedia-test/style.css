@@ -1,0 +1,698 @@
+/* ==========================================================
+   Famipedia（ファミペディア）  スタイル
+   ----------------------------------------------------------
+   ★ スマホを基準に書いてあります（モバイルファースト）
+     まず狭い画面用の指定を書き、
+     画面が広いときだけ @media で上書きする、という順番です。
+     逆にすると指定が打ち消し合って複雑になります。
+   ========================================================== */
+
+:root {
+  --wiki-bg:     #f8f9fa;
+  --wiki-white:  #ffffff;
+  --wiki-line:   #a2a9b1;
+  --wiki-line-l: #c8ccd1;
+  --wiki-link:   #3366cc;
+  --wiki-text:   #202122;
+  --wiki-muted:  #54595d;
+  --accent:      #2a6d3c;
+  --accent-d:    #235c32;
+
+  /* iPhoneのホームバーなどに隠れない余白 */
+  --safe-b: env(safe-area-inset-bottom, 0px);
+
+  --bar-h: 60px;   /* 上部バーの高さ（ロゴが二段組みなので少し高め） */
+  --tab-h: 58px;   /* 下部タブの高さ */
+
+  /* ロゴの色。白いタイルに黒い F */
+  --logo-bg:    #ffffff;
+  --logo-ring:  #c8ccd1;
+  --logo-ink:   #202122;
+
+  /* --------------------------------------------------------
+     フォント
+     本物のWikipediaが使っている並びに、日本語フォントを足したもの。
+
+     ★ 並び順に意味があります
+       前半の欧文フォント（Georgia など）は日本語の字を持っていません。
+       そのため、英数字は前半のフォント、日本語は後半のフォントが
+       自動で使われます。これで「Wikipediaらしい英字」と
+       「正しい日本語の字形」が両立します。
+
+     ★ なぜ日本語フォントを明示するのか
+       ただの sans-serif だけだと、環境によって中国語フォントが
+       選ばれて「花」「直」「今」などが中国の字形になります。
+       （漢字は日中韓で同じ文字コードを共有しているため）
+       日本語フォントを名指しすることで、これを防いでいます。
+     -------------------------------------------------------- */
+
+  /* 本文用（ゴシック体） */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Lato,
+    "Helvetica Neue", Helvetica, Arial,
+    "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+    "Yu Gothic Medium", "Yu Gothic", Meiryo,
+    "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+
+  /* 見出し用（明朝体）。Wikipediaの見出しがこの並びです */
+  --font-serif:
+    "Linux Libertine", Georgia, "Liberation Serif", "Nimbus Roman",
+    "Noto Serif", Times,
+    "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "MS PMincho",
+    "Noto Serif JP", "Noto Serif CJK JP", serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+/* hidden属性を付けたら必ず隠れるようにする。
+   CSSで display を指定していると、hidden が打ち消されてしまうため */
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font-sans);
+}
+
+body {
+  background: var(--wiki-white);
+  color: var(--wiki-text);
+  /* Wikipedia本文の実寸に合わせています（14px / 行間1.6） */
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 本文中のリンクはWikipediaと同じ青 */
+a { color: var(--wiki-link); }
+
+/* 読み上げソフト用。目には見えないが読まれる */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ==========================================================
+   上部バー
+   ========================================================== */
+
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  height: var(--bar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 14px;
+  background: var(--wiki-white);
+  border-bottom: 1px solid var(--wiki-line-l);
+}
+
+.topbar-brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+
+/* ---------- ロゴ ---------- */
+
+/* 白い角丸タイルに明朝体の F。アプリアイコンと同じ形 */
+.logo-mark {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--logo-bg);
+  border: 1px solid var(--logo-ring);
+  color: var(--logo-ink);
+  font-family: var(--font-serif);
+  font-size: 27px;
+  line-height: 1;
+  /* 明朝のFは少し上に寄って見えるので、位置を微調整 */
+  padding-bottom: 2px;
+}
+
+/* 文字部分。本家と同じく明朝の二段組み */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.logo-text strong {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.logo-text small {
+  font-family: var(--font-serif);
+  font-size: 10.5px;
+  color: var(--wiki-muted);
+  white-space: nowrap;
+}
+
+.topbar-actions { display: flex; gap: 12px; flex: 0 0 auto; }
+
+.link-btn {
+  background: none; border: none; padding: 4px 2px;
+  font-family: inherit; font-size: 13px;
+  color: var(--wiki-link);
+  cursor: pointer;
+}
+.link-btn:active { opacity: 0.6; }
+.link-btn.small { font-size: 12px; }
+
+/* ==========================================================
+   本体（スマホでは1枚ずつ表示）
+   ========================================================== */
+
+.app {
+  padding-top: var(--bar-h);
+  /* 下部タブのぶんだけ空けておく */
+  padding-bottom: calc(var(--tab-h) + var(--safe-b));
+}
+
+.pane { display: none; }
+.pane.is-active { display: block; }
+
+/* ==========================================================
+   質問パネル
+   ========================================================== */
+
+.progress {
+  height: 3px;
+  background: #e8eaed;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.ask-wrap {
+  padding: 20px 18px 24px;
+  /* 下の操作バーに隠れないよう、ゆとりを持たせる */
+  padding-bottom: 110px;
+}
+
+.ask-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.ask-step {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+/* 祖父母に読み上げる文なので、大きく読みやすく */
+.ask-question {
+  font-size: 22px;
+  line-height: 1.55;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-bottom: 8px;
+}
+
+.ask-hint {
+  font-size: 13px;
+  color: var(--wiki-muted);
+  margin-bottom: 16px;
+}
+
+.ask-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: #e8f2ea;
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin-bottom: 14px;
+}
+
+.ask-input {
+  width: 100%;
+  padding: 14px;
+  /* 16px未満だとiPhoneで勝手に拡大されるので、必ず16px以上にする */
+  font-size: 16px;
+  font-family: inherit;
+  line-height: 1.7;
+  color: inherit;
+  background: var(--wiki-bg);
+  border: 1px solid var(--wiki-line-l);
+  border-radius: 10px;
+  resize: vertical;
+  min-height: 160px;
+}
+.ask-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(42, 109, 60, 0.15);
+}
+
+.ask-tip {
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--wiki-muted);
+}
+
+/* ---------- 画面下に貼り付く操作バー ---------- */
+
+.actionbar {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: calc(var(--tab-h) + var(--safe-b));
+  z-index: 15;
+  padding: 10px 18px 12px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--wiki-line-l);
+}
+
+/* 操作バーは質問パネルの中にあるので、
+   「ページ」タブに切り替えると一緒に消えます（指定は不要） */
+
+.btn {
+  width: 100%;
+  /* 指で押す領域は最低44px。これを下回ると押しづらい */
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid var(--wiki-line-l);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--wiki-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:active { background: var(--accent-d); }
+.btn-primary:disabled { background: #9fb3a5; border-color: #9fb3a5; cursor: default; }
+
+/* くるくる回る待機マーク */
+.btn-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ==========================================================
+   記事ページ
+   ========================================================== */
+
+.doc { padding: 20px 18px 40px; }
+
+/* 記事タイトル。明朝で、太字にはしない（Wikipediaと同じ作法）
+   スマホでは長い名前が折り返しすぎるので、少し小さくしています */
+.doc-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.3;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--wiki-line);
+}
+
+.doc-from {
+  font-size: 12.8px;
+  color: var(--wiki-muted);
+  margin: 7px 0 16px;
+}
+
+/* 節見出し。Wikipediaは 1.5rem = 24px。スマホでは少し詰める */
+.doc-section h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-top: 24px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--wiki-line);
+}
+
+.doc-body { margin-top: 10px; font-size: 14px; line-height: 1.65; }
+.doc-body .para { margin-bottom: 12px; }
+.doc-body .empty { color: #9aa0a6; font-size: 13px; }
+
+.tag {
+  font-size: 10px;
+  color: #9aa0a6;
+  vertical-align: super;
+  margin-left: 2px;
+}
+
+/* ---------- 年表 ---------- */
+
+.timeline { list-style: none; }
+
+.tl-item {
+  display: flex;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px dotted #e3e5e8;
+}
+
+.tl-year {
+  flex: 0 0 62px;
+  color: var(--wiki-link);
+  font-size: 13.5px;
+}
+
+.tl-text { flex: 1; min-width: 0; }
+
+/* ---------- 基礎情報ボックス ---------- */
+/* スマホでは横幅いっぱい、PCでは記事の右に回り込ませる */
+
+.infobox {
+  width: 100%;
+  margin: 0 0 20px;
+  border: 1px solid var(--wiki-line-l);
+  background: var(--wiki-bg);
+  /* Wikipediaの基礎情報ボックスは本文より一段小さい */
+  font-size: 12.8px;
+  line-height: 1.5;
+}
+
+.infobox-title {
+  /* 本家の人物ボックスと同じ、青みがかった灰色の帯 */
+  background: #ccd9ec;
+  text-align: center;
+  font-weight: 700;
+  padding: 7px;
+}
+
+.infobox-photo {
+  display: grid;
+  place-items: center;
+  width: calc(100% - 16px);
+  height: 200px;
+  margin: 8px;
+  border: 1px solid var(--wiki-line-l);
+  background: #fff center/cover no-repeat;
+  font-family: inherit;
+  cursor: pointer;
+}
+.infobox-photo .photo-hint { color: #9aa0a6; font-size: 13px; }
+.infobox-photo.has-image .photo-hint { display: none; }
+
+.infobox-table { width: 100%; border-collapse: collapse; }
+.infobox-table th,
+.infobox-table td {
+  padding: 7px 10px;
+  vertical-align: top;
+  text-align: left;
+  border-top: 1px solid #dfe2e5;
+}
+.infobox-table th { width: 78px; font-weight: 600; }
+
+.doc-foot {
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 1px solid var(--wiki-line-l);
+  font-size: 12px;
+  color: var(--wiki-muted);
+}
+
+/* ==========================================================
+   下部タブ（スマホのみ）
+   ========================================================== */
+
+.tabbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 25;
+  height: calc(var(--tab-h) + var(--safe-b));
+  padding-bottom: var(--safe-b);
+  display: flex;
+  background: var(--wiki-white);
+  border-top: 1px solid var(--wiki-line-l);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  border-top: 2px solid transparent;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--wiki-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab.is-active {
+  color: var(--accent);
+  font-weight: 700;
+  border-top-color: var(--accent);
+}
+
+.tab-badge {
+  min-width: 19px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  line-height: 19px;
+}
+
+/* ==========================================================
+   通知
+   ========================================================== */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tab-h) + var(--safe-b) + 78px);
+  transform: translate(-50%, 8px);
+  z-index: 40;
+  max-width: calc(100% - 36px);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(32, 33, 34, 0.92);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+.toast.is-shown { opacity: 1; transform: translate(-50%, 0); }
+
+/* ==========================================================
+   確認ダイアログ
+   ========================================================== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(32, 33, 34, 0.45);
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 340px;
+  padding: 22px 20px 18px;
+  border-radius: 12px;
+  background: var(--wiki-white);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.modal-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--wiki-muted);
+  margin-bottom: 18px;
+}
+
+.modal-box-wide { max-width: 420px; }
+
+/* 書き出した文章を出す欄 */
+.export-text {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 12px;
+  font-family: inherit;
+  /* 16px未満だとiPhoneで勝手に拡大されるので下げない */
+  font-size: 16px;
+  line-height: 1.6;
+  color: inherit;
+  background: var(--wiki-bg);
+  border: 1px solid var(--wiki-line-l);
+  border-radius: 8px;
+  resize: vertical;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-actions .btn { font-size: 14px; min-height: 44px; }
+
+/* 消す側のボタン。取り返しがつかない操作なので赤くする */
+.btn-danger {
+  background: #b32424;
+  border-color: #b32424;
+  color: #fff;
+}
+.btn-danger:active { background: #96201f; }
+
+/* ==========================================================
+   新しく追加された文が光る演出
+   ========================================================== */
+
+@keyframes flash {
+  from { background: #fff8d6; }
+  to   { background: transparent; }
+}
+.just-added { animation: flash 1.8s ease-out; }
+
+/* ==========================================================
+   ここから先は「画面が広いとき」の上書き
+   ========================================================== */
+
+/* ---------- タブレット以上：2枚を横に並べる ---------- */
+
+@media (min-width: 820px) {
+
+  body { font-size: 14px; }
+
+  .app {
+    display: grid;
+    /* 記事を広く、質問パネルを固定幅に */
+    grid-template-columns: minmax(0, 1fr) 360px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 0;
+    align-items: start;
+  }
+
+  /* 両方いつでも表示する */
+  .pane { display: block; }
+
+  /* 記事を左、質問を右に置く */
+  .pane-doc { order: 1; border-right: 1px solid var(--wiki-line-l); }
+  .pane-ask { order: 2; position: sticky; top: var(--bar-h); }
+
+  .tabbar { display: none; }
+
+  .ask-wrap { padding: 24px 22px 20px; }
+  .ask-question { font-size: 19px; }
+
+  /* 操作バーは固定をやめ、パネルの中に収める */
+  .actionbar {
+    position: static;
+    background: none;
+    backdrop-filter: none;
+    border-top: none;
+    padding: 0 22px 24px;
+  }
+
+  .doc { padding: 24px 28px 60px; }
+  .doc-title { font-size: 32px; }
+  .doc-section h2 { font-size: 24px; }
+
+  /* 基礎情報ボックスを右に回り込ませる（Wikipediaと同じ形） */
+  .infobox {
+    float: right;
+    width: 260px;
+    margin: 0 0 16px 20px;
+  }
+
+  .toast { bottom: 32px; }
+}
+
+/* ---------- PC：左に目次ぶんの余白を足して中央に寄せる ---------- */
+
+@media (min-width: 1100px) {
+  .app { grid-template-columns: minmax(0, 1fr) 380px; }
+  .doc { padding: 28px 44px 80px; }
+}
+
+/* ==========================================================
+   ダークモード（端末の設定に追従）
+   ========================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wiki-bg:     #202122;
+    --wiki-white:  #16181a;
+    --wiki-line:   #54595d;
+    --wiki-line-l: #3a3e42;
+    --wiki-link:   #88a9e8;
+    --wiki-text:   #eaecf0;
+    --wiki-muted:  #a2a9b1;
+    --accent:      #6cc08a;
+    --accent-d:    #55a771;
+
+    /* ロゴのタイルは暗い画面でも白のまま（アプリアイコンと同じ見え方） */
+    --logo-bg:   #ffffff;
+    --logo-ring: #ffffff;
+    --logo-ink:  #202122;
+  }
+
+  body { background: var(--wiki-white); }
+  .infobox-title { background: #2f3742; }
+  .btn { background: #232629; }
+  .btn-primary { color: #11291a; }
+  .progress { background: #2b2f33; }
+  .ask-badge { background: #22362a; }
+  .tl-item { border-bottom-color: #2b2f33; }
+  .infobox-table th, .infobox-table td { border-top-color: #2b2f33; }
+  .actionbar { background: rgba(22, 24, 26, 0.94); }
+  .toast { background: rgba(234, 236, 240, 0.95); color: #16181a; }
+  @keyframes flash {
+    from { background: #3a3720; }
+    to   { background: transparent; }
+  }
+}
+
+/* ==========================================================
+   アニメーションを減らす設定にしている人への配慮
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

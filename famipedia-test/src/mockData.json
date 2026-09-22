@@ -1,0 +1,94 @@
+{
+  "_README": "AIサーバーができるまでの『仮の返事』です。本来はサーバーが文章を生成して返しますが、それを待たずに画面を作れるよう、ここに同じ形のデータを用意しています。サーバーが完成したら src/api.ts の USE_MOCK を false にするだけで本物に切り替わります。",
+
+  "_shape": "各項目は types.ts の GenerateResult と同じ形です。{answer} の部分に、入力された回答がそのまま差し込まれます。",
+
+  "byQuestion": {
+    "q-intro": {
+      "section": "summary",
+      "template": "本人は自身のことを「{answer}」と語る。",
+      "followUp": "そう思うようになったきっかけはありますか？"
+    },
+    "q-house": {
+      "section": "episode",
+      "template": "幼少期を過ごした家について、{answer}と振り返っている。",
+      "followUp": "その家で一番好きだった場所はどこでしたか？"
+    },
+    "q-play": {
+      "section": "episode",
+      "template": "子どもの頃の遊びについては、{answer}と語る。",
+      "followUp": "一緒に遊んだ友達とは、その後も会いましたか？"
+    },
+    "q-school": {
+      "section": "timeline",
+      "template": "{answer}",
+      "followUp": "その頃、将来はどんな仕事に就きたいと思っていましたか？"
+    },
+    "q-job": {
+      "section": "timeline",
+      "template": "{answer}",
+      "followUp": "初めてお給料をもらったとき、何に使いましたか？"
+    },
+    "q-meet": {
+      "section": "episode",
+      "template": "配偶者との出会いについて、{answer}と語っている。",
+      "followUp": "第一印象はどんな感じでしたか？"
+    },
+    "q-marry": {
+      "section": "timeline",
+      "template": "{answer}",
+      "followUp": "新婚の頃、どんな家に住んでいましたか？"
+    },
+    "q-raise": {
+      "section": "episode",
+      "template": "子育てについては、{answer}と振り返る。",
+      "followUp": "子どもたちが小さかった頃、家族でよく行った場所はありますか？"
+    },
+    "q-food": {
+      "section": "episode",
+      "template": "得意料理について、{answer}と話す。",
+      "followUp": "その料理は誰から教わったものですか？"
+    },
+    "q-move": {
+      "section": "timeline",
+      "template": "{answer}",
+      "followUp": "新しい土地に慣れるまで、どのくらいかかりましたか？"
+    },
+    "q-happy": {
+      "section": "episode",
+      "template": "人生で最もうれしかった出来事として、{answer}を挙げている。",
+      "followUp": "そのとき、周りの家族はどんな様子でしたか？"
+    },
+    "q-hard": {
+      "section": "episode",
+      "template": "苦しかった時期について、{answer}と語る。",
+      "followUp": null
+    },
+    "q-recent": {
+      "section": "timeline",
+      "template": "{answer}",
+      "followUp": "その頃から始めた趣味はありますか？"
+    },
+    "q-now": {
+      "section": "message",
+      "template": "近況として、{answer}と話している。",
+      "followUp": null
+    },
+    "q-value": {
+      "section": "message",
+      "template": "長く大切にしてきた考え方として、{answer}を挙げる。",
+      "followUp": "その考えを誰かから教わったのですか？"
+    },
+    "q-msg": {
+      "section": "message",
+      "template": "孫へのことばとして、{answer}と述べている。",
+      "followUp": null
+    }
+  },
+
+  "fallback": {
+    "section": "episode",
+    "template": "{answer}",
+    "followUp": null
+  }
+}

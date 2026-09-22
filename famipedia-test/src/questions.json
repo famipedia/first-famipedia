@@ -1,0 +1,130 @@
+{
+  "_README": "質問データ。内容を増やしたり言い回しを変えたりするときは、このファイルだけ編集すればOKです。id は保存の目印なので、一度決めたら変えないでください。",
+
+  "questions": [
+    {
+      "id": "q-name",
+      "section": "summary",
+      "field": "name",
+      "infoOnly": true,
+      "text": "記録する方のお名前を教えてください",
+      "hint": "例：田中 一郎（たなか いちろう）"
+    },
+    {
+      "id": "q-birth",
+      "section": "summary",
+      "field": "birth",
+      "infoOnly": true,
+      "text": "生まれたのは何年ですか？",
+      "hint": "例：1951年5月10日。西暦でも元号でも大丈夫です"
+    },
+    {
+      "id": "q-place",
+      "section": "summary",
+      "field": "place",
+      "infoOnly": true,
+      "text": "生まれ育った場所はどこですか？",
+      "hint": "例：東京都。詳しい思い出は後で聞きます"
+    },
+    {
+      "id": "q-family",
+      "section": "summary",
+      "field": "family",
+      "infoOnly": true,
+      "text": "ご家族の構成を教えてください",
+      "hint": "例：妻・好子、子ども2人、孫3人"
+    },
+    {
+      "id": "q-intro",
+      "section": "summary",
+      "text": "自分のことをひとことで言うと、どんな人ですか？",
+      "hint": "「よく笑う」「せっかち」など、短くて大丈夫"
+    },
+
+    {
+      "id": "q-house",
+      "section": "episode",
+      "text": "子どもの頃、家はどんな様子でしたか？",
+      "hint": "家の作り、におい、冬の寒さなど"
+    },
+    {
+      "id": "q-play",
+      "section": "episode",
+      "text": "子どもの頃、よく遊んだ場所や遊びは？",
+      "hint": "一緒に遊んだ友達のことも"
+    },
+    {
+      "id": "q-school",
+      "section": "timeline",
+      "text": "学生時代で、今でも覚えていることは？",
+      "hint": "何年頃のことか分かれば、そこも一緒に"
+    },
+    {
+      "id": "q-job",
+      "section": "timeline",
+      "field": "job",
+      "text": "最初の仕事は何でしたか？",
+      "hint": "例：1970年代に一般企業へ就職。何年頃からか分かれば一緒に"
+    },
+    {
+      "id": "q-meet",
+      "section": "episode",
+      "text": "結婚相手とはどこで出会いましたか？",
+      "hint": "第一印象も聞けたら"
+    },
+    {
+      "id": "q-marry",
+      "section": "timeline",
+      "text": "結婚したのはいつ頃で、どんな式でしたか？",
+      "hint": "年が分かると年表がきれいに並びます"
+    },
+    {
+      "id": "q-raise",
+      "section": "episode",
+      "text": "子育てで一番大変だったことは？"
+    },
+    {
+      "id": "q-food",
+      "section": "episode",
+      "text": "一番よく作った料理は何ですか？",
+      "hint": "レシピまで聞けたら大収穫です"
+    },
+    {
+      "id": "q-move",
+      "section": "timeline",
+      "text": "引っ越しや転職など、生活が大きく変わった出来事は？",
+      "hint": "何年頃のことか分かれば一緒に"
+    },
+    {
+      "id": "q-happy",
+      "section": "episode",
+      "text": "人生で一番うれしかった日のことを教えてください"
+    },
+    {
+      "id": "q-hard",
+      "section": "episode",
+      "text": "逆に、一番つらかった時期をどう乗り越えましたか？",
+      "hint": "話しづらそうなら遠慮なく飛ばしてください"
+    },
+    {
+      "id": "q-recent",
+      "section": "timeline",
+      "text": "定年や引退のあと、生活はどう変わりましたか？"
+    },
+    {
+      "id": "q-now",
+      "section": "message",
+      "text": "今、楽しみにしていることは何ですか？"
+    },
+    {
+      "id": "q-value",
+      "section": "message",
+      "text": "長く大切にしてきた考え方はありますか？"
+    },
+    {
+      "id": "q-msg",
+      "section": "message",
+      "text": "孫に伝えておきたいことはありますか？"
+    }
+  ]
+}
