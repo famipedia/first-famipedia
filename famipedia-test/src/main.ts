@@ -8,12 +8,14 @@
 
 import type { Answer, GenerateRequest } from './types';
 import {
-  store, save, clearAll,
+  store, save, clearAll, initStore,
   nextQuestion, findQuestion, addAnswer, addFollowUp, progress,
   BASE_QUESTIONS,
 } from './store';
 import { generateArticle } from './api';
 import { render, SECTION_LABEL } from './render';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebaseConfig';
 
 const $ = <T extends HTMLElement>(sel: string): T =>
   document.querySelector<T>(sel)!;
@@ -216,14 +218,48 @@ elPhotoIn.addEventListener('change', () => {
   const file = elPhotoIn.files?.[0];
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    store.photo = String(reader.result);
-    save();
-    render();
-  };
-  reader.readAsDataURL(file);
+  // スマホのカメラ写真は数MBあることが多く、そのまま保存すると
+  // Firestoreの1ドキュメント1MBの上限に引っかかるので、
+  // 横800pxくらいに縮めてから保存します
+  void resizeImage(file, 800, 0.7)
+    .then((dataUrl) => {
+      store.photo = dataUrl;
+      save();
+      render();
+    })
+    .catch((err) => {
+      console.error(err);
+      toast('写真の読み込みに失敗しました');
+    });
 });
+
+/** 画像を指定した幅までリサイズ・圧縮してBase64(dataURL)にする */
+function resizeImage(file: File, maxWidth: number, quality: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error ?? new Error('読み込みに失敗しました'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('画像を読み込めませんでした'));
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('canvasを初期化できませんでした'));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = String(reader.result);
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 /* ----------------------------------------------------------
    書き出し
@@ -340,8 +376,49 @@ $('#modal-ok').addEventListener('click', () => {
 
 
 /* ----------------------------------------------------------
-   起動
+   ログアウト
    ---------------------------------------------------------- */
 
-render();
-showQuestion();
+document.getElementById('btn-logout')?.addEventListener('click', () => {
+  void signOut(auth).then(() => {
+    location.href = './login.html';
+  });
+});
+
+
+/* ----------------------------------------------------------
+   起動
+   ----------------------------------------------------------
+   1. URLの ?person=... から、どの記録を開くか調べる
+   2. ログインしているか確認する（していなければlogin.htmlへ）
+   3. Firestoreからその記録を読み込んで、はじめて画面を作る
+   ---------------------------------------------------------- */
+
+const personId = new URLSearchParams(location.search).get('person');
+
+if (!personId) {
+  // どの記録を開くか指定が無いので、一覧画面に戻す
+  location.href = './people.html';
+} else {
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      location.href = './login.html';
+      return;
+    }
+    void boot(personId);
+  });
+}
+
+async function boot(id: string): Promise<void> {
+  try {
+    await initStore(id);
+  } catch (err) {
+    console.error(err);
+    alert('この記録を開けませんでした。一覧画面に戻ります。');
+    location.href = './people.html';
+    return;
+  }
+
+  render();
+  showQuestion();
+}

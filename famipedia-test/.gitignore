@@ -1,0 +1,13 @@
+# 依存パッケージ（npm installで誰でも再生成できるので、gitには含めません）
+node_modules/
+
+# ビルド成果物
+dist/
+
+# エディタ・OSが作る一時ファイル
+.DS_Store
+*.log
+
+# 環境変数（もし今後 .env を使うなら）
+.env
+.env.local

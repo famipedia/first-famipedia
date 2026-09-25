@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>記録一覧 | ファミペディア</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./people.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="logo-mark" aria-hidden="true">F</span>
+    <span class="logo-text">
+      <strong>ファミペディア</strong>
+      <small>家族の百科事典</small>
+    </span>
+  </div>
+  <div class="topbar-actions">
+    <button id="btn-logout" class="link-btn">ログアウト</button>
+  </div>
+</header>
+
+<main class="people-page">
+  <h1 class="people-title">記録一覧</h1>
+  <p class="people-lead">記録したい人を選んでください。新しく記録を始めることもできます。</p>
+
+  <div id="people-list" class="people-list">
+    <p class="empty">読み込み中…</p>
+  </div>
+
+  <form id="new-person-form" class="new-person">
+    <label class="sr-only" for="new-person-name">新しく記録する人の名前</label>
+    <input
+      type="text"
+      id="new-person-name"
+      placeholder="例：田中 一郎（あとで変えられます）"
+    />
+    <button type="submit" class="btn btn-primary">＋ 新しく記録する</button>
+  </form>
+</main>
+
+<script type="module" src="./src/people.ts"></script>
+</body>
+</html>

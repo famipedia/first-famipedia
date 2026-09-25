@@ -1,17 +1,22 @@
 /* ==========================================================
    store.ts  ―  データの保管庫
    ----------------------------------------------------------
-   入力された内容を覚えておき、リロードしても消えないように
-   端末（ブラウザ）に保存します。
+   今開いている「1人分の記録」をメモリ上に持ち、Firestoreの
+   people/{personId} ドキュメントと同期します。
+
+   （もともとはlocalStorageに保存していましたが、複数人分の
+    記録をアカウントで共有できるよう、Firestore保存に変えました）
    ========================================================== */
 
 import type { Store, Question, Answer } from './types';
 import questionsJson from './questions.json';
-
-const STORAGE_KEY = 'famipedia-v1';
+import { loadPerson, savePersonStore } from './db';
 
 /** JSONから読み込んだ、もともとの質問リスト */
 export const BASE_QUESTIONS = questionsJson.questions as Question[];
+
+/** 今開いている記録のFirestore上のid */
+let currentPersonId: string | null = null;
 
 /** 空っぽの状態 */
 function emptyStore(): Store {
@@ -24,49 +29,45 @@ function emptyStore(): Store {
   };
 }
 
-/** 保存されているデータを読み出す */
-function load(): Store {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return emptyStore();
-    // 古い保存データに新しい項目が無くても落ちないよう、空の形に重ねる
-    return { ...emptyStore(), ...JSON.parse(raw) as Partial<Store> };
-  } catch {
-    return emptyStore();
-  }
+export const store: Store = emptyStore();
+
+/** 指定した記録をFirestoreから読み込み、storeに反映する。
+ *  main.ts の起動時（ログイン確認のあと）に1回だけ呼びます */
+export async function initStore(personId: string): Promise<void> {
+  currentPersonId = personId;
+
+  const person = await loadPerson(personId);
+  const data = person ?? emptyStore();
+
+  store.info = data.info;
+  store.answers = data.answers;
+  store.photo = data.photo;
+  store.skipped = data.skipped;
+  store.extraQuestions = data.extraQuestions;
 }
 
-export const store: Store = load();
-
-/** 今の状態を端末に書き込む */
-export function save(): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
-  } catch {
-    // 容量オーバーなどで保存できなくても、アプリは止めない
-    console.warn('保存できませんでした（容量不足の可能性）');
-  }
-}
-
-/** すべて消して、まっさらな状態に戻す
+/** 今の状態をFirestoreに書き込む。
  *
- *  端末の保存を消すだけでなく、いま動いている store の中身も
- *  空に入れ替えます。こうしておけば、ページを再読み込みしなくても
- *  その場で最初の状態に戻ります。
- *  （埋め込み表示だと再読み込みが効かない場合があるため） */
-export function clearAll(): void {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // 消せなくても、下のリセットは実行する
-  }
+ *  通信には少し時間がかかりますが、呼び出し側を await だらけに
+ *  しないよう、ここでは「投げて忘れる」形にしています。
+ *  失敗しても入力そのものはメモリ上に残るので、画面は壊れません */
+export function save(): void {
+  if (!currentPersonId) return;
+  void savePersonStore(currentPersonId, store).catch((err) => {
+    console.warn('保存できませんでした（通信状況をご確認ください）', err);
+  });
+}
 
+/** 今の記録だけ、まっさらな状態に戻す
+ *  （記録そのもの＝ドキュメントは消さず、中身だけ空にします） */
+export function clearAll(): void {
   const empty = emptyStore();
   store.info = empty.info;
   store.answers = empty.answers;
   store.photo = empty.photo;
   store.skipped = empty.skipped;
   store.extraQuestions = empty.extraQuestions;
+  save();
 }
 
 /** もとの質問 + AIが増やした質問 */
