@@ -1,0 +1,116 @@
+/* ==========================================================
+   people.css ― 記録一覧（プロフィール帳のトップ）
+   ----------------------------------------------------------
+   style.css の :root にある色・フォントのトークンをそのまま
+   使っています（このファイル単体では定義し直していません。
+   必ず style.css と一緒に読み込んでください）。
+   ========================================================== */
+
+.people-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: calc(var(--bar-h) + 24px) 18px 60px;
+}
+
+.people-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.people-lead {
+  font-size: 13px;
+  color: var(--wiki-muted);
+  margin-bottom: 24px;
+}
+
+.people-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.people-list .empty {
+  color: #9aa0a6;
+  font-size: 13px;
+}
+
+.person-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--wiki-line-l);
+  border-radius: 8px;
+  background: var(--wiki-bg);
+  text-decoration: none;
+  color: inherit;
+}
+
+.person-card:hover {
+  border-color: var(--accent);
+}
+
+.person-card__photo {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background-color: var(--wiki-white);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 1px solid var(--wiki-line-l);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-serif);
+  color: var(--wiki-muted);
+}
+
+.person-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.person-card__name {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.person-card__meta {
+  display: block;
+  font-size: 12px;
+  color: var(--wiki-muted);
+}
+
+.new-person {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.new-person input {
+  flex: 1;
+  min-width: 200px;
+  font-family: var(--font-sans);
+  /* 16px未満だとiPhoneで勝手に拡大されるので16px以上を維持 */
+  font-size: 16px;
+  padding: 10px 12px;
+  color: var(--wiki-text);
+  background: var(--wiki-white);
+  border: 1px solid var(--wiki-line);
+  border-radius: 4px;
+}
+
+.new-person input:focus-visible {
+  outline: 2px solid var(--wiki-link);
+}
+
+@media (prefers-color-scheme: dark) {
+  .person-card__photo {
+    background-color: var(--wiki-white);
+  }
+}

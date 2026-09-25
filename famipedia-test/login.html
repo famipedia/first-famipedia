@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ログイン | 家族の記録</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./login.css" />
+  </head>
+  <body>
+    <div class="auth-page">
+      <!-- 左側：ビジュアルパネル（PCのみ表示） -->
+      <aside class="auth-visual" aria-hidden="true">
+        <div class="auth-visual__inner">
+          <p class="auth-visual__eyebrow">家族の記録</p>
+          <h1 class="auth-visual__title">
+            ひとつひとつの<br />
+            思い出を、<br />
+            かたちにする。
+          </h1>
+          <p class="auth-visual__lead">
+            質問に答えるだけで、家族の歴史が一冊のプロフィールになります。
+          </p>
+        </div>
+        <div class="auth-visual__pattern"></div>
+      </aside>
+
+      <!-- 右側：フォームパネル -->
+      <main class="auth-form-panel">
+        <div class="auth-form-wrap">
+          <!-- タブ切り替え：ログイン / 新規登録 -->
+          <div
+            class="auth-tabs"
+            role="tablist"
+            aria-label="ログインまたは新規登録"
+          >
+            <button
+              type="button"
+              class="auth-tab is-active"
+              id="tab-login"
+              role="tab"
+              aria-selected="true"
+              aria-controls="panel-login"
+            >
+              ログイン
+            </button>
+            <button
+              type="button"
+              class="auth-tab"
+              id="tab-register"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-register"
+            >
+              新規登録
+            </button>
+            <span class="auth-tabs__indicator" aria-hidden="true"></span>
+          </div>
+
+          <!-- エラーメッセージ表示欄 -->
+          <p class="auth-error" id="auth-error" role="alert" hidden></p>
+
+          <!-- ログインフォーム -->
+          <form
+            class="auth-form"
+            id="panel-login"
+            role="tabpanel"
+            aria-labelledby="tab-login"
+            novalidate
+          >
+            <h2 class="auth-form__heading">おかえりなさい</h2>
+            <p class="auth-form__sub">
+              メールアドレスとパスワードでログインしてください。
+            </p>
+
+            <label class="auth-field">
+              <span class="auth-field__label">メールアドレス</span>
+              <input
+                type="email"
+                name="email"
+                id="login-email"
+                autocomplete="email"
+                placeholder="例：taro@example.com"
+                required
+              />
+            </label>
+
+            <label class="auth-field">
+              <span class="auth-field__label">パスワード</span>
+              <div class="auth-password-wrap">
+                <input
+                  type="password"
+                  name="password"
+                  id="login-password"
+                  autocomplete="current-password"
+                  placeholder="パスワードを入力"
+                  required
+                  minlength="6"
+                />
+                <button
+                  type="button"
+                  class="auth-password-toggle"
+                  data-target="login-password"
+                  aria-label="パスワードを表示する"
+                  aria-pressed="false"
+                >
+                  <!-- 目（表示）アイコン -->
+                  <svg
+                    class="icon-eye"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3.2"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    />
+                  </svg>
+                  <!-- 目（非表示/スラッシュ）アイコン -->
+                  <svg
+                    class="icon-eye-off"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                    hidden
+                  >
+                    <path
+                      d="M3 3l18 18M10.6 10.7a3.2 3.2 0 0 0 4.5 4.5M7.4 7.5C4.6 9 2.9 11.4 1.5 12c0 0 3.5 7 10.5 7 1.8 0 3.4-.4 4.7-1M16.9 16.9C19.6 15.4 21.3 13 22.5 12c0 0-1.4-2.8-4.3-4.8"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </label>
+
+            <button type="submit" class="auth-submit">ログインする</button>
+          </form>
+
+          <!-- 新規登録フォーム -->
+          <form
+            class="auth-form"
+            id="panel-register"
+            role="tabpanel"
+            aria-labelledby="tab-register"
+            hidden
+            novalidate
+          >
+            <h2 class="auth-form__heading">はじめまして</h2>
+            <p class="auth-form__sub">
+              メールアドレスとパスワードを決めて登録してください。
+            </p>
+
+            <label class="auth-field">
+              <span class="auth-field__label">メールアドレス</span>
+              <input
+                type="email"
+                name="email"
+                id="register-email"
+                autocomplete="email"
+                placeholder="例：taro@example.com"
+                required
+              />
+            </label>
+
+            <label class="auth-field">
+              <span class="auth-field__label">パスワード</span>
+              <div class="auth-password-wrap">
+                <input
+                  type="password"
+                  name="password"
+                  id="register-password"
+                  autocomplete="new-password"
+                  placeholder="6文字以上のパスワード"
+                  required
+                  minlength="6"
+                />
+                <button
+                  type="button"
+                  class="auth-password-toggle"
+                  data-target="register-password"
+                  aria-label="パスワードを表示する"
+                  aria-pressed="false"
+                >
+                  <svg
+                    class="icon-eye"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3.2"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    />
+                  </svg>
+                  <svg
+                    class="icon-eye-off"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                    hidden
+                  >
+                    <path
+                      d="M3 3l18 18M10.6 10.7a3.2 3.2 0 0 0 4.5 4.5M7.4 7.5C4.6 9 2.9 11.4 1.5 12c0 0 3.5 7 10.5 7 1.8 0 3.4-.4 4.7-1M16.9 16.9C19.6 15.4 21.3 13 22.5 12c0 0-1.4-2.8-4.3-4.8"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </label>
+
+            <button type="submit" class="auth-submit">登録する</button>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="./login.ts"></script>
+  </body>
+</html>

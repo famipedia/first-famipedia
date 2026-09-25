@@ -84,3 +84,26 @@ export interface Store {
   /** AIが追加した質問 */
   extraQuestions: Question[];
 }
+
+/* ----------------------------------------------------------
+   ここから下が、Firestore（people コレクション）とのやり取り部分
+   ---------------------------------------------------------- */
+
+/** Firestoreに保存する記録1件ぶん。Storeの中身に加えて、
+ *  誰のもの（ownerId）かと、いつのものかを持ちます */
+export interface PersonDoc extends Store {
+  id: string;
+  /** ログイン中のアカウントのuid。これで持ち主を判定します */
+  ownerId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** 記録一覧（people.html）にはこれだけあれば十分、という軽い形 */
+export interface PersonSummary {
+  id: string;
+  name: string;
+  photo: string;
+  answerCount: number;
+  updatedAt: string;
+}
