@@ -28,7 +28,7 @@
   </div>
   <div class="topbar-actions">
     <a href="./people.html" class="link-btn">記録一覧</a>
-    <button id="btn-export" class="link-btn">書き出す</button>
+    <a href="./donate.html" class="link-btn">寄付する</a>
     <button id="btn-clear"  class="link-btn">最初から</button>
     <button id="btn-logout" class="link-btn">ログアウト</button>
   </div>
@@ -176,31 +176,11 @@
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <p class="modal-title" id="modal-title">記録をすべて消します</p>
     <p class="modal-text">
-      この操作は取り消せません。<br />
-      残しておきたい場合は、先に「書き出す」で保存してください。
+      この操作は取り消せません。
     </p>
     <div class="modal-actions">
       <button type="button" class="btn" id="modal-cancel">やめる</button>
       <button type="button" class="btn btn-danger" id="modal-ok">すべて消す</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     書き出し
-     ページからのファイル保存は、埋め込み表示だと許可されない。
-     そのため、本文を出してコピーしてもらう形にしています。
-     ============================================================ -->
-<div class="modal" id="export-modal" hidden>
-  <div class="modal-box modal-box-wide">
-    <p class="modal-title">記録を書き出す</p>
-    <p class="modal-text">
-      下の文章をコピーして、メモ帳やメールに貼り付けてください。
-    </p>
-    <textarea class="export-text" id="export-text" readonly rows="9"></textarea>
-    <div class="modal-actions">
-      <button type="button" class="btn" id="export-close">閉じる</button>
-      <button type="button" class="btn btn-primary" id="export-copy">コピー</button>
     </div>
   </div>
 </div>

@@ -54,7 +54,7 @@ function showQuestion(): void {
     currentId = null;
     elStep.textContent = '完了';
     elQuestion.textContent = 'ひと通り記録できました。おつかれさまでした。';
-    elHint.textContent = '「書き出す」からテキストとして保存できます。';
+    elHint.textContent = '';
     elBadge.hidden = true;
     elInput.hidden = true;
     elSave.hidden = true;
@@ -325,73 +325,7 @@ function resizeImage(file: File, maxWidth: number, quality: number): Promise<str
   });
 }
 
-/* ----------------------------------------------------------
-   書き出し
-   ----------------------------------------------------------
-   ページから直接ファイルを保存する方法は、埋め込み表示だと
-   許可されません。そこで、本文を画面に出して
-   コピーしてもらう形にしています。
-   ---------------------------------------------------------- */
 
-function buildExportText(): string {
-  const i = store.info;
-  const lines: string[] = [`# ${i.name || '無題'}`, ''];
-
-  // 基礎情報
-  const facts: string[] = [];
-  if (i.birth)  facts.push(`- 生年月日：${i.birth}`);
-  if (i.place)  facts.push(`- 出身地：${i.place}`);
-  if (i.job)    facts.push(`- 職業：${i.job}`);
-  if (i.height) facts.push(`- 身長：${i.height}`);
-  if (i.blood)  facts.push(`- 血液型：${i.blood}`);
-  if (facts.length) lines.push(...facts, '');
-
-  (Object.keys(SECTION_LABEL) as (keyof typeof SECTION_LABEL)[]).forEach((sec) => {
-    const items = store.answers.filter((a) => {
-      const q = findQuestion(a.questionId);
-      return (a.result?.section ?? q?.section) === sec && q?.infoOnly !== true;
-    });
-    if (items.length === 0) return;
-
-    lines.push(`## ${SECTION_LABEL[sec]}`, '');
-    items.forEach((a) => {
-      lines.push(`**${a.question}**`, '', a.result?.text ?? a.raw, '');
-    });
-  });
-
-  if (store.answers.length === 0) lines.push('（まだ記録がありません）');
-  return lines.join('\n');
-}
-
-const elExportModal = $<HTMLDivElement>('#export-modal');
-const elExportText  = $<HTMLTextAreaElement>('#export-text');
-
-$('#btn-export').addEventListener('click', () => {
-  elExportText.value = buildExportText();
-  elExportModal.hidden = false;
-});
-
-$('#export-close').addEventListener('click', () => {
-  elExportModal.hidden = true;
-});
-
-elExportModal.addEventListener('click', (e) => {
-  if (e.target === elExportModal) elExportModal.hidden = true;
-});
-
-$('#export-copy').addEventListener('click', () => {
-  // まず標準のコピー機能を試す
-  void navigator.clipboard?.writeText(elExportText.value)
-    .then(() => toast('コピーしました'))
-    .catch(() => selectFallback());
-
-  // 使えない環境では、文章を選択状態にして手動コピーしてもらう
-  function selectFallback(): void {
-    elExportText.focus();
-    elExportText.select();
-    toast('文字を選択しました。長押しでコピーしてください');
-  }
-});
 
 // 最初から
 //
