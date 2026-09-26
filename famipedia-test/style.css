@@ -157,7 +157,7 @@ a { color: var(--wiki-link); }
   white-space: nowrap;
 }
 
-.topbar-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+.topbar-actions { display: flex; gap: 4px; flex: 0 0 auto; }
 
 /* メニューが3つ以上並ぶページ（記事ページ）は、スマホ幅だと
    ロゴの文字にメニューが重なるので、文字を隠して「F」のマークだけにする。
@@ -702,8 +702,12 @@ a { color: var(--wiki-link); }
 
 /* ---------- 上部バー：画面が広くなるほどメニューにゆとりを持たせる ---------- */
 
-/* 一番小さいスマホ（320px）でもメニューが収まるよう、基本は詰めてある */
-@media (min-width: 360px) {
+/* メニューが5つあるので、400px未満のスマホでは余白とメニューの間隔を詰めて表示する */
+@media (max-width: 399px) {
+  .topbar { padding: 0 10px; }
+}
+
+@media (min-width: 400px) {
   .topbar-actions { gap: 10px; }
   .link-btn { font-size: 13px; }
 }
