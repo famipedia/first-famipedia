@@ -51,7 +51,9 @@ src/
  ├ api.ts               ★ AIとのやり取り。今はモック
  ├ store.ts             保存と質問の出し分け
  ├ render.ts            記事ページの組み立て
- └ main.ts              画面の司令塔
+ ├ main.ts              画面の司令塔
+ └ donate.ts            支援ページの画面切り替え
+donate.html / donate.css  支援ページ（Wikipediaの寄付ページのパロディ。実際の決済はしない）
 server/
  └ index.example.js     サーバー側の雛形（AI担当用）
 ```
