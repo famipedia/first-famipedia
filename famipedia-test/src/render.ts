@@ -59,14 +59,22 @@ function leadParagraph(): string {
    AIの判断を優先し、無ければ質問の設定に従う
    ---------------------------------------------------------- */
 
-function sectionOf(a: Answer): SectionId {
+export function sectionOf(a: Answer): SectionId {
   if (a.result) return a.result.section;
   return findQuestion(a.questionId)?.section ?? 'episode';
 }
 
 /** 記事に載せる文章 */
-function textOf(a: Answer): string {
+export function textOf(a: Answer): string {
   return a.result ? a.result.text : a.raw;
+}
+
+/** 文章ごとに付ける［編集］ボタン。
+ *  押されたときにどの回答か分かるよう、store.answers の番号を持たせる */
+function editButton(a: Answer): string {
+  const idx = store.answers.indexOf(a);
+  return `<button type="button" class="para-edit" data-answer-index="${idx}"`
+    + ' aria-label="この文章を編集">編集</button>';
 }
 
 
@@ -127,7 +135,7 @@ export function render(highlightId?: string): void {
 
       const hl = a.questionId === highlightId ? ' just-added' : '';
       parts.push(
-        `<p class="para${hl}">${esc(text)}<span class="tag">[本人談]</span></p>`,
+        `<p class="para${hl}">${esc(text)}<span class="tag">[本人談]</span>${editButton(a)}</p>`,
       );
     });
 
@@ -174,7 +182,7 @@ function renderTimeline(items: Answer[], highlightId?: string): string {
     const hl = a.questionId === highlightId ? ' just-added' : '';
     return `<li class="tl-item${hl}">`
       + `<span class="tl-year">${esc(year ?? '—')}</span>`
-      + `<span class="tl-text">${esc(text)}</span>`
+      + `<span class="tl-text">${esc(text)}${editButton(a)}</span>`
       + '</li>';
   });
 

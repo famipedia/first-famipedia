@@ -207,6 +207,33 @@
   </div>
 </div>
 
+<!-- ============================================================
+     文章の編集モーダル
+     記事の各段落・年表の［編集］から開く
+     ============================================================ -->
+<div class="modal" id="edit-modal" hidden>
+  <div class="modal-box modal-box-wide" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+    <p class="modal-title" id="edit-title">文章を編集</p>
+    <p class="modal-text" id="edit-question"></p>
+    <label class="edit-field" id="edit-year-field" hidden>
+      <span class="edit-label">年（年表の左に出ます）</span>
+      <input type="text" id="edit-year" class="edit-text edit-year" placeholder="例: 1966年" />
+    </label>
+    <label class="edit-field">
+      <span class="edit-label">記事の文章</span>
+      <textarea id="edit-text" class="edit-text" rows="7"></textarea>
+    </label>
+    <details class="edit-raw">
+      <summary>もとの回答を見る</summary>
+      <p id="edit-raw"></p>
+    </details>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="edit-cancel">やめる</button>
+      <button type="button" class="btn btn-primary" id="edit-save">保存する</button>
+    </div>
+  </div>
+</div>
+
 <script type="module" src="./src/main.ts"></script>
 </body>
 </html>
