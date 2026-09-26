@@ -57,10 +57,63 @@ function leadParagraph(): string {
    AIの判断を優先し、無ければ質問の設定に従う
    ---------------------------------------------------------- */
 
+export function getBirthYear(): number | null {
+  const match = store.info.birth?.match(/\d+/);
+  return match ? Number(match[0]) : null;
+}
+
+export function getPeriod(y: number | null, birthYear: number | null): string {
+  if (y === null) return '時期不明';
+  if (birthYear === null) {
+    const decade = Math.floor(y / 10) * 10;
+    return `${decade}年代`;
+  }
+  const age = y - birthYear;
+  if (age <= 15) return '幼少・少年期';
+  if (age <= 29) return '青年期';
+  if (age <= 49) return '壮年期';
+  return '高年期';
+}
+
+export function mapToOfficialPeriod(p: string, y?: string): string {
+  const s = p || '';
+  const ys = y || '';
+
+  // AIの判定ミス（例：子どもの頃なのに高年期と判定されているなど）を補正
+  if (ys === '子どもの頃' || ys.includes('幼少') || ys === '子供の頃') return '幼少・少年期';
+  if (ys === '学生時代' || ys.includes('大学時代') || ys.includes('高校時代')) return '青年期';
+
+  if (s.includes('幼少') || s.includes('少年') || s.includes('子供') || s.includes('子ども')) return '幼少・少年期';
+  if (s.includes('青年') || s.includes('大学') || s.includes('高校') || s.includes('学生') || s.includes('10代') || s.includes('20代')) return '青年期';
+  if (s.includes('壮年') || s.includes('社会人') || s.includes('中年') || s.includes('30') || s.includes('40')) return '壮年期';
+  if (s.includes('高年') || s.includes('晩年') || s.includes('老後') || s.includes('50') || s.includes('60') || s.includes('定年')) return '高年期';
+  return '時期不明'; // どれにも当てはまらない場合は時期不明とする
+}
+
 export function sectionOf(a: Answer): SectionId {
+  // 以前の「人物・エピソード」「伝えたいこと」など、summary以外のものは一旦すべてタイムライン扱いにする
   const sec = a.result?.section ?? findQuestion(a.questionId)?.section;
-  // 以前の「人物・エピソード」「伝えたいこと」で保存された記録も、来歴・生涯に出す
-  return sec === 'summary' ? 'summary' : 'timeline';
+  const baseSec = sec === 'summary' ? 'summary' : 'timeline';
+
+  if (baseSec === 'timeline') {
+    const y = a.result?.year || '';
+    let p = a.result?.period || '';
+    
+    // 期間が明示されていない場合、年号などから推測
+    if (!p) {
+      const yNum = y ? Number(y.match(/\d+/)?.[0]) : null;
+      if (yNum !== null) p = getPeriod(yNum, getBirthYear());
+      else if (y && y !== '時期不明' && y !== '不明') p = y;
+      else p = '時期不明';
+    }
+
+    // 4つの時期のどれにも分類できない場合は概要に入れる
+    if (mapToOfficialPeriod(p, y) === '時期不明') {
+      return 'summary';
+    }
+  }
+
+  return baseSec;
 }
 
 /** 記事に載せる文章 */
@@ -174,6 +227,8 @@ function renderTimeline(items: Answer[], highlightId?: string): string {
     return { a, year, text };
   }).filter((r): r is NonNullable<typeof r> => r !== null);
 
+  const birthYear = getBirthYear();
+
   rows.sort((x, y) => {
     const nx = Number(x.year?.match(/\d+/)?.[0] ?? 9999);
     const ny = Number(y.year?.match(/\d+/)?.[0] ?? 9999);
@@ -183,39 +238,39 @@ function renderTimeline(items: Answer[], highlightId?: string): string {
     
     // なければ期間の並び順で比較
     const getOrder = (a: typeof x) => {
-      const p = a.a.result?.period || getPeriod(Number(a.year?.match(/\d+/)?.[0] ?? null));
-      if (p.includes('幼少') || p.includes('少年')) return 10;
-      if (p.includes('青年')) return 20;
-      if (p.includes('壮年')) return 40;
-      if (p.includes('高年') || p.includes('晩年')) return 60;
-      return nx !== 9999 ? nx : 999;
+      let p = a.a.result?.period;
+      if (!p) {
+        const yNum = a.year ? Number(a.year.match(/\d+/)?.[0]) : null;
+        if (yNum !== null) p = getPeriod(yNum, birthYear);
+        else if (a.year && a.year !== '時期不明' && a.year !== '不明') p = a.year;
+        else p = '時期不明';
+      }
+      
+      const official = mapToOfficialPeriod(p, a.year ?? '');
+      if (official === '幼少・少年期') return 10;
+      if (official === '青年期') return 20;
+      if (official === '壮年期') return 40;
+      if (official === '高年期') return 60;
+      return 20;
     };
     
     return getOrder(x) - getOrder(y);
   });
 
-  const birthYearMatch = store.info.birth?.match(/\d+/);
-  const birthYear = birthYearMatch ? Number(birthYearMatch[0]) : null;
-
-  function getPeriod(y: number | null): string {
-    if (y === null) return '時期不明';
-    if (birthYear === null) {
-      const decade = Math.floor(y / 10) * 10;
-      return `${decade}年代`;
-    }
-    const age = y - birthYear;
-    if (age <= 15) return '幼少・少年期';
-    if (age <= 29) return '青年期';
-    if (age <= 49) return '壮年期';
-    return '高年期';
-  }
 
   let currentPeriod = '';
   const htmlParts: string[] = [];
 
   rows.forEach(({ a, year, text }) => {
     const yNum = year ? Number(year.match(/\d+/)?.[0]) : null;
-    const period = a.result?.period || getPeriod(yNum);
+    let period = a.result?.period;
+    if (!period) {
+      if (yNum !== null) period = getPeriod(yNum, birthYear);
+      else if (year && year !== '時期不明' && year !== '不明') period = year;
+      else period = '時期不明';
+    }
+    // 見出しを強制的に4つのいずれかに限定
+    period = mapToOfficialPeriod(period, year ?? '');
 
     if (period !== currentPeriod) {
       if (currentPeriod !== '') {
