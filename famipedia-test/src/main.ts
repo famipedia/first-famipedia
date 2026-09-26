@@ -13,7 +13,7 @@ import {
   BASE_QUESTIONS,
 } from './store';
 import { generateFollowUp, generateArticleSummary } from './api';
-import { render, SECTION_LABEL } from './render';
+import { render } from './render';
 import { captureArticle, saveImage, imageFileName } from './longshot';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';

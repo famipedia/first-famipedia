@@ -51,7 +51,7 @@ function buildFrame(article: HTMLElement): HTMLElement {
 
   const clone = article.cloneNode(true) as HTMLElement;
   // 画像に写す必要のない部品と、元の画面とかぶる id を外す
-  clone.querySelectorAll('.doc-shot, .doc-foot-donate').forEach((el) => el.remove());
+  clone.querySelectorAll('.doc-shot, .doc-foot-donate, .infobox-edit').forEach((el) => el.remove());
   clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
 
   const foot = document.createElement('p');
