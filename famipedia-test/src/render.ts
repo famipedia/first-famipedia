@@ -8,12 +8,11 @@
 import type { SectionId, Answer } from './types';
 import { store, findQuestion } from './store';
 
-export const SECTIONS: SectionId[] = ['summary', 'timeline', 'episode'];
+export const SECTIONS: SectionId[] = ['summary', 'timeline'];
 
 export const SECTION_LABEL: Record<SectionId, string> = {
   summary:  '概要',
   timeline: '来歴・生涯',
-  episode:  '人物・エピソード',
 };
 
 /** 要素を取ってくる短縮形 */
