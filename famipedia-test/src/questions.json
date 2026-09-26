@@ -5,61 +5,61 @@
     {
       "id": "q-nickname",
       "section": "timeline",
-      "text": "当時のあだ名は何だった？",
+      "text": "子どもの頃のあだ名は何でしたか？",
       "hint": "そう呼ばれた理由も"
     },
     {
       "id": "q-allowance",
       "section": "timeline",
-      "text": "子どもの頃のおこづかいは、いくらだった？",
+      "text": "子どもの頃のおこづかいは、いくらでしたか？",
       "hint": "何に使っていたかも"
     },
     {
       "id": "q-dagashi",
       "section": "timeline",
-      "text": "駄菓子屋でいつも買ってたお菓子の名前は？",
+      "text": "駄菓子屋でよく買っていたお菓子は何ですか？",
       "hint": "いくらだったかも覚えていたら"
     },
     {
       "id": "q-bento",
       "section": "timeline",
-      "text": "遠足のお弁当には、何が入ってた？",
+      "text": "遠足のお弁当には、何が入っていましたか？",
       "hint": "誰が作ってくれたかも"
     },
     {
       "id": "q-detour",
       "section": "timeline",
-      "text": "学校帰りに、よく寄り道したのはどこ？",
+      "text": "学校帰りに、よく寄り道した場所はどこですか？",
       "hint": "誰と行っていたかも"
     },
     {
       "id": "q-record",
       "section": "timeline",
-      "text": "初めて買ったレコードは、誰の曲だった？",
+      "text": "初めて買ったレコードは、誰の曲でしたか？",
       "hint": "何歳のとき、どこで買ったかも"
     },
     {
       "id": "q-date-outfit",
       "section": "timeline",
-      "text": "初めてのデートには、どんな服で行った？",
+      "text": "初めてのデートには、どんな服を着て行きましたか？",
       "hint": "どこに行ったかも"
     },
     {
       "id": "q-first-pay",
       "section": "timeline",
-      "text": "初めてのお給料は、いくらだった？",
+      "text": "初めてのお給料は、いくらでしたか？",
       "hint": "何年頃か、何に使ったかも"
     },
     {
       "id": "q-first-word",
       "section": "timeline",
-      "text": "子どもが初めてしゃべった言葉は？",
+      "text": "お子さんが初めてしゃべった言葉は何でしたか？",
       "hint": "そのときの様子も"
     },
     {
       "id": "q-keepsake",
       "section": "timeline",
-      "text": "今も捨てられずに取ってある物は？",
+      "text": "今も捨てられずに取ってある物は何ですか？",
       "hint": "いつ、どうやって手に入れた物かも"
     }
   ]
