@@ -9,7 +9,7 @@
    ========================================================== */
 
 import {
-  collection, doc, getDoc, getDocs, addDoc, setDoc,
+  collection, doc, getDoc, getDocs, addDoc, setDoc, deleteDoc,
   query, where,
 } from 'firebase/firestore';
 import { db } from './firebaseConfig';
@@ -82,4 +82,9 @@ export async function savePersonStore(personId: string, store: Store): Promise<v
     { ...store, updatedAt: new Date().toISOString() },
     { merge: true },
   );
+}
+
+/** 記録を1件まるごと削除する（元に戻せません） */
+export async function deletePerson(personId: string): Promise<void> {
+  await deleteDoc(doc(peopleRef, personId));
 }

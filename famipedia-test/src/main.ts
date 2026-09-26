@@ -721,8 +721,20 @@ async function boot(id: string): Promise<void> {
   render();
   showQuestion();
   
+  const params = new URLSearchParams(location.search);
+
+  // 記録一覧の ⋯ →「共有」から来たときは、記事を表示してすぐスクショを撮る。
+  // 再読み込みでもう一度撮らないよう、URLから shot=1 を外しておく
+  if (params.get('shot') === '1') {
+    params.delete('shot');
+    history.replaceState(null, '', `${location.pathname}?${params}`);
+    switchPane('doc');
+    elShotBtn.click();
+    return;
+  }
+
   // URLに new=1 があるか、名前が未設定なら初回起動とみなして基本情報モーダルを開く
-  const isNew = new URLSearchParams(location.search).get('new') === '1';
+  const isNew = params.get('new') === '1';
   if (isNew || !store.info.name) {
     openSettingsModal();
   }

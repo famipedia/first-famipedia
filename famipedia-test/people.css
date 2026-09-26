@@ -110,3 +110,121 @@
 }
 
 
+
+/* ---------- 各記録の ⋯ ボタン ---------- */
+
+.person-item { position: relative; }
+
+/* ⋯ ボタンと重ならないよう、カードの右側を空けておく */
+.person-item .person-card { padding-right: 56px; }
+
+.person-menu-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--wiki-muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.person-menu-btn:hover,
+.person-menu-btn[aria-expanded="true"] {
+  background: var(--wiki-white);
+  border-color: var(--wiki-line-l);
+  color: var(--wiki-text);
+}
+.person-menu-btn:focus-visible { outline: 2px solid var(--wiki-link); }
+
+/* ---------- ⋯ から開くメニュー（Wikipediaのドロップダウン風） ---------- */
+
+.person-menu {
+  position: absolute;
+  z-index: 30;
+  min-width: 170px;
+  padding: 4px 0;
+  background: var(--wiki-white);
+  border: 1px solid var(--wiki-line);
+  border-radius: 2px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.person-menu__item {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  color: var(--wiki-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.person-menu__item:hover,
+.person-menu__item:focus-visible {
+  background: #eaecf0;
+  outline: none;
+}
+.person-menu__item--danger { color: #d73333; }
+
+/* ---------- 削除の確認（Wikipediaのダイアログ風） ----------
+   角はほぼ四角、見出しは太字、赤い「削除する」ボタン */
+
+.wiki-dialog {
+  max-width: 400px;
+  padding: 0;
+  border: 1px solid var(--wiki-line);
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.wiki-dialog__title {
+  padding: 16px 20px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.wiki-dialog__text {
+  padding: 12px 20px 20px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.wiki-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid #eaecf0;
+}
+
+.wiki-btn {
+  min-height: 36px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--wiki-text);
+  background: #f8f9fa;
+  border: 1px solid #a2a9b1;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.wiki-btn:hover { background: var(--wiki-white); }
+.wiki-btn:focus-visible { outline: 2px solid var(--wiki-link); outline-offset: 1px; }
+
+.wiki-btn--destructive {
+  color: #fff;
+  background: #d73333;
+  border-color: #d73333;
+}
+.wiki-btn--destructive:hover { background: #b32424; border-color: #b32424; }
+.wiki-btn:disabled { opacity: 0.6; cursor: default; }
