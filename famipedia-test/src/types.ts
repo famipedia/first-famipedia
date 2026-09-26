@@ -106,8 +106,50 @@ export interface PersonDoc extends Store {
 /** 記録一覧（people.html）にはこれだけあれば十分、という軽い形 */
 export interface PersonSummary {
   id: string;
+  /** 人物の記録か、思い出の記録か */
+  type: RecordType;
   name: string;
   photo: string;
   answerCount: number;
+  updatedAt: string;
+  /** 思い出の別の呼び名（リンクの自動付与に使う）。人物は空 */
+  aliases: string[];
+}
+
+/* ----------------------------------------------------------
+   ここから下が、思い出（場所・出来事など）の記録
+   人物と同じ people コレクションに type: 'memory' で保存します。
+   （type が無い古い記録は人物として扱います）
+   ---------------------------------------------------------- */
+
+export type RecordType = 'person' | 'memory';
+
+/** 思い出ページの写真1枚 */
+export interface MemoryPhoto {
+  /** 画像（base64のdataURL） */
+  src: string;
+  /** 写真の下に出す説明（省略可） */
+  caption: string;
+}
+
+/** 思い出の記録1件ぶん（memory.html） */
+export interface MemoryDoc {
+  id: string;
+  type: 'memory';
+  ownerId: string;
+  /** ページのタイトル。例：市民会館 */
+  title: string;
+  /** よみがな。例：しみんかいかん（省略可） */
+  reading: string;
+  /** 別の呼び名。本文にこれが出てきてもリンクになる */
+  aliases: string[];
+  /** 種類。例：市民公民館、公園、お店 */
+  kind: string;
+  /** ゆかり。例：田中家 */
+  related: string;
+  /** 本文。段落は改行で区切る。[[キーワード]] でリンクも書ける */
+  body: string;
+  photos: MemoryPhoto[];
+  createdAt: string;
   updatedAt: string;
 }
