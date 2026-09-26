@@ -7,7 +7,7 @@
    ========================================================== */
 
 /** 記事のどのセクションに入れるか */
-export type SectionId = 'summary' | 'timeline' | 'episode' | 'message';
+export type SectionId = 'summary' | 'timeline' | 'episode';
 
 /** 基礎情報ボックス（記事の右上に出る表） */
 export interface PersonInfo {
@@ -63,6 +63,8 @@ export interface GenerateResult {
   section: SectionId;
   /** 年表用。「1972年」など。読み取れなければ null */
   year: string | null;
+  /** AIが文章の内容から推測した年代（幼少・少年期、青年期、壮年期、高年期）。判断できなければ null */
+  period?: string | null;
   /** 記事本文（整えられた文章） */
   text: string;
   /** さらに掘り下げるための追加質問。無ければ null */
