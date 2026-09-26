@@ -18,33 +18,35 @@
     </span>
   </a>
   <div class="topbar-actions">
-    <a href="./donate.html" class="link-btn">支援</a>
     <button id="btn-logout" class="link-btn">ログアウト</button>
   </div>
 </header>
 
 <main class="people-page">
+  <section class="new-person-section" aria-labelledby="new-person-title">
+    <h2 class="people-title" id="new-person-title">新規登録</h2>
+    <form id="new-person-form" class="new-person">
+      <label class="sr-only" for="new-person-name">新しく記録する人の名前</label>
+      <input
+        type="text"
+        id="new-person-name"
+        placeholder="例：田中 一郎（あとで変えられます）"
+      />
+      <button type="submit" class="btn btn-primary">＋ 新しく記録する</button>
+    </form>
+  </section>
+
   <h1 class="people-title">記録一覧</h1>
-  <p class="people-lead">記録したい人を選んでください。新しく記録を始めることもできます。</p>
+  <p class="people-lead">記録したい人を選んでください。</p>
 
   <div id="people-list" class="people-list">
     <p class="empty">読み込み中…</p>
   </div>
-
-  <form id="new-person-form" class="new-person">
-    <label class="sr-only" for="new-person-name">新しく記録する人の名前</label>
-    <input
-      type="text"
-      id="new-person-name"
-      placeholder="例：田中 一郎（あとで変えられます）"
-    />
-    <button type="submit" class="btn btn-primary">＋ 新しく記録する</button>
-  </form>
 </main>
 
 <!-- 各記録の ⋯ から開くメニュー。people.ts が押された ⋯ の下に動かす -->
 <div class="person-menu" id="person-menu" role="menu" hidden>
-  <button type="button" class="person-menu__item" id="menu-share" role="menuitem">共有（スクショ）</button>
+  <button type="button" class="person-menu__item" id="menu-share" role="menuitem">共有</button>
   <button type="button" class="person-menu__item person-menu__item--danger" id="menu-delete" role="menuitem">削除</button>
 </div>
 
