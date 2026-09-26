@@ -12,12 +12,11 @@
 
 import type { GenerateRequest, GenerateResult, SectionId } from './types';
 import mockData from './mockData.json';
+import { getVertexAI, getGenerativeModel } from 'firebase/vertexai';
+import { app } from './firebaseConfig';
 
 /** true = 仮データで動く / false = 本物のサーバーを呼ぶ */
-export const USE_MOCK = true;
-
-/** 本物のサーバーの窓口 */
-const API_ENDPOINT = '/api/generate';
+export const USE_MOCK = false;
 
 
 /* ----------------------------------------------------------
@@ -33,30 +32,60 @@ export async function generateArticle(
     return mockGenerate(questionId, req);
   }
 
-  // ---- ここから下が本番用 ----
-  //
-  // ※ APIキーはこのファイルに絶対に書かないでください。
-  //    ブラウザの開発者ツールから誰でも読めてしまいます。
-  //    キーはサーバー側の環境変数に置き、サーバーがAIを呼びます。
-
-  const res = await fetch(API_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(req),
+  // Firebase Vertex AI の初期化
+  const vertexAI = getVertexAI(app);
+  const model = getGenerativeModel(vertexAI, {
+    model: 'gemini-3.7-flash',
+    generationConfig: {
+      responseMimeType: 'application/json',
+    }
   });
 
-  if (!res.ok) {
-    throw new Error(`サーバーから ${res.status} が返ってきました`);
+  const prompt = `
+あなたは、家族の聞き書きをwikipediaの記事にまとめる編集者です。
+
+【対象者】
+名前: ${req.person?.name || '不明'}
+生年: ${req.person?.birth || '不明'}
+出身: ${req.person?.place || '不明'}
+
+【質問】
+${req.question}
+
+【本人の答え（話し言葉のまま）】
+${req.answer}
+
+この答えを、wikipediaの記述に整えてください。次の規則を守ること。
+
+- 事実を足さない。答えに書かれていないことは絶対に書かない
+- 話し言葉を書き言葉に直す。一人称は使わず、三人称で書く
+- 1〜3文に収める
+- 答えが曖昧なら、曖昧なまま書く（断定しない）
+
+次のJSONだけを返してください。前後に説明を付けないこと。
+
+{
+  "section": "summary | timeline | episode | message のいずれか",
+  "year": "答えに年が含まれていれば「1972年」の形。無ければ null",
+  "text": "整えた本文",
+  "followUp": "もう一歩踏み込むための質問を1つ。不要なら null"
+}
+  `.trim();
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    const data = JSON.parse(text) as GenerateResult;
+
+    if (typeof data.text !== 'string') {
+      throw new Error('返ってきたデータの形が想定と違います');
+    }
+
+    return data;
+  } catch (err) {
+    console.error('AI Error:', err);
+    throw new Error('AIの処理に失敗しました');
   }
-
-  const data = await res.json() as GenerateResult;
-
-  // 返ってきた中身が想定どおりか、軽く確かめる
-  if (typeof data.text !== 'string') {
-    throw new Error('返ってきたデータの形が想定と違います');
-  }
-
-  return data;
 }
 
 
