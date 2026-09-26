@@ -16,6 +16,8 @@ export interface PersonInfo {
   place: string;
   job: string;
   family: string;
+  height?: string;
+  blood?: string;
 }
 
 /** 質問1件。questions.json の中身がこの形になります */

@@ -415,6 +415,23 @@ a { color: var(--wiki-link); }
   text-align: center;
   font-weight: 700;
   padding: 7px;
+  position: relative;
+}
+
+.infobox-edit {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+  padding: 4px;
+}
+.infobox-edit:active {
+  opacity: 0.6;
 }
 
 .infobox-photo {
