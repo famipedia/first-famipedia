@@ -14,6 +14,7 @@ import {
 } from './store';
 import { generateArticle } from './api';
 import { render, SECTION_LABEL } from './render';
+import { captureArticle, saveImage, imageFileName } from './longshot';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 
@@ -326,6 +327,54 @@ $('#export-copy').addEventListener('click', () => {
     elExportText.select();
     toast('文字を選択しました。長押しでコピーしてください');
   }
+});
+
+/* ----------------------------------------------------------
+   縦長の画像で保存
+   ---------------------------------------------------------- */
+
+const elShotBtn   = $<HTMLButtonElement>('#btn-shot');
+const elShotModal = $<HTMLDivElement>('#shot-modal');
+const elShotImg   = $<HTMLImageElement>('#shot-img');
+
+let shotBlob: Blob | null = null;
+
+elShotBtn.addEventListener('click', () => {
+  if (elShotBtn.disabled) return;
+  elShotBtn.disabled = true;
+  elShotBtn.textContent = '画像を作っています…';
+
+  captureArticle($<HTMLElement>('.doc'))
+    .then((blob) => {
+      shotBlob = blob;
+      elShotImg.src = URL.createObjectURL(blob);
+      elShotModal.hidden = false;
+    })
+    .catch((err) => {
+      console.error(err);
+      toast('画像を作れませんでした。もう一度お試しください');
+    })
+    .finally(() => {
+      elShotBtn.disabled = false;
+      elShotBtn.textContent = '縦長の画像で保存';
+    });
+});
+
+function closeShot(): void {
+  elShotModal.hidden = true;
+  if (elShotImg.src) URL.revokeObjectURL(elShotImg.src);
+  elShotImg.removeAttribute('src');
+  shotBlob = null;
+}
+
+$('#shot-close').addEventListener('click', closeShot);
+elShotModal.addEventListener('click', (e) => {
+  if (e.target === elShotModal) closeShot();
+});
+
+$('#shot-save').addEventListener('click', () => {
+  if (!shotBlob) return;
+  void saveImage(shotBlob, imageFileName(store.info.name));
 });
 
 // 最初から

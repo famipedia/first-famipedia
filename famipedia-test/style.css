@@ -343,6 +343,15 @@ a { color: var(--wiki-link); }
 .doc-from {
   font-size: 12.8px;
   color: var(--wiki-muted);
+}
+
+/* 出典の行。右端に「縦長の画像で保存」を置く */
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
   margin: 7px 0 16px;
 }
 
@@ -578,6 +587,51 @@ a { color: var(--wiki-link); }
   color: #fff;
 }
 .btn-danger:active { background: #96201f; }
+
+/* ==========================================================
+   縦長の画像
+   ========================================================== */
+
+/* 確認用のプレビュー。縦に長いので枠の中でスクロールさせる */
+.shot-preview {
+  max-height: 55vh;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  border: 1px solid var(--wiki-line-l);
+  background: var(--wiki-bg);
+}
+.shot-preview img { display: block; width: 100%; height: auto; }
+
+/* 撮影用の枠。画面の外に置き、PCでもスマホと同じ見た目で撮る。
+   広い画面用の @media 指定より強くなるよう、.shot-frame を前に付けている */
+.shot-frame {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  background: var(--wiki-white);
+}
+.shot-frame * { animation: none !important; transition: none !important; }
+
+.shot-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--wiki-line-l);
+}
+
+.shot-frame .doc { padding: 20px 18px 8px; }
+.shot-frame .doc-title { font-size: 26px; }
+.shot-frame .doc-section h2 { font-size: 22px; }
+.shot-frame .infobox { float: none; width: 100%; margin: 0 0 20px; }
+.shot-frame .infobox-photo:not(.has-image) { display: none; }
+
+.shot-foot {
+  padding: 12px 18px 16px;
+  font-size: 11px;
+  color: var(--wiki-muted);
+  text-align: right;
+}
 
 /* ==========================================================
    新しく追加された文が光る演出
