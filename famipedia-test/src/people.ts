@@ -52,7 +52,7 @@ function renderList(people: PersonSummary[]): void {
 
   if (people.length === 0) {
     elList.innerHTML =
-      '<p class="empty">まだ記録がありません。さっそく下から作ってみましょう！</p>';
+      '<p class="empty">まだ記録がありません。さっそく上から作ってみましょう！</p>';
     return;
   }
 
