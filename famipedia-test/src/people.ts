@@ -243,52 +243,68 @@ document.addEventListener('keydown', (e: KeyboardEvent) => {
    新しく記録を作る
    ---------------------------------------------------------- */
 
-/** 新規登録で選ばれている種類（人物 / 思い出） */
-function selectedType(): RecordType {
-  const checked = elForm.querySelector<HTMLInputElement>('input[name="record-type"]:checked');
-  return checked?.value === 'memory' ? 'memory' : 'person';
-}
+// 名前を入れて「＋ 新しく記録する」を押したら、まず何のページを作るか選んでもらう。
+// 入力欄の段階で種類を選ばせるより、迷わずに始められるため
 
-// 種類に合わせて、入力欄の例とボタンの文言を変える
-elForm.querySelectorAll<HTMLInputElement>('input[name="record-type"]').forEach((r) => {
-  r.addEventListener('change', () => {
-    const memory = selectedType() === 'memory';
-    elNameInput.placeholder = memory
-      ? '例：市民会館（あとで変えられます）'
-      : '例：田中 一郎（あとで変えられます）';
-    $('#new-person-label').textContent = memory
-      ? '新しく記録する思い出のタイトル'
-      : '新しく記録する人の名前';
-    $('#new-person-submit').textContent = memory
-      ? '＋ 新しく思い出を記録する'
-      : '＋ 新しく記録する';
-  });
-});
+const elTypeModal = $<HTMLDivElement>('#type-modal');
+const typeChoices = elTypeModal.querySelectorAll<HTMLButtonElement>('.type-choice');
 
 elForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
-  const user = auth.currentUser;
-  if (!user) return;
-
   const name = elNameInput.value.trim();
-  const submitBtn = elForm.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-  submitBtn.disabled = true;
+  $('#type-lead').textContent = name
+    ? `『${name}』のページを作ります。どちらのページにしますか？`
+    : 'どちらのページを作りますか？名前やタイトルは、あとからでも入れられます。';
 
-  const created = selectedType() === 'memory'
-    ? createMemory(user.uid, name).then((id) => `${memoryUrl(id)}&new=1`)
-    : createPerson(user.uid, name).then(
-        (id) => `./index.html?person=${encodeURIComponent(id)}&new=1`);
+  typeChoices.forEach((b) => { b.disabled = false; });
+  elTypeModal.hidden = false;
+  typeChoices[0].focus();
+});
 
-  void created
-    .then((url) => {
-      location.href = url;
-    })
-    .catch((err) => {
-      console.error(err);
-      alert('作成に失敗しました。もう一度お試しください。');
-      submitBtn.disabled = false;
-    });
+function closeTypeModal(): void {
+  elTypeModal.hidden = true;
+  elNameInput.focus();
+}
+
+$('#type-cancel').addEventListener('click', closeTypeModal);
+elTypeModal.addEventListener('click', (e) => {
+  if (e.target === elTypeModal) closeTypeModal();
+});
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && !elTypeModal.hidden) closeTypeModal();
+});
+
+typeChoices.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const type = btn.dataset.type as RecordType;
+    const name = elNameInput.value.trim();
+
+    // 二重に作られないよう、選んだら両方とも押せなくする
+    typeChoices.forEach((b) => { b.disabled = true; });
+    btn.querySelector('.type-choice__name')!.textContent =
+      type === 'memory' ? '思い出を作っています…' : '人物を作っています…';
+
+    const created = type === 'memory'
+      ? createMemory(user.uid, name).then((id) => `${memoryUrl(id)}&new=1`)
+      : createPerson(user.uid, name).then(
+          (id) => `./index.html?person=${encodeURIComponent(id)}&new=1`);
+
+    void created
+      .then((url) => {
+        location.href = url;
+      })
+      .catch((err) => {
+        console.error(err);
+        alert('作成に失敗しました。もう一度お試しください。');
+        btn.querySelector('.type-choice__name')!.textContent =
+          type === 'memory' ? '思い出' : '人物';
+        typeChoices.forEach((b) => { b.disabled = false; });
+      });
+  });
 });
 
 

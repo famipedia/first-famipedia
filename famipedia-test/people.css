@@ -238,48 +238,6 @@
 .wiki-btn--destructive:hover { background: #b32424; border-color: #b32424; }
 .wiki-btn:disabled { opacity: 0.6; cursor: default; }
 
-/* ---------- 新規登録：人物 / 思い出 の切り替え ---------- */
-
-.record-type {
-  display: flex;
-  width: 100%;
-  border: none;
-  margin: 0;
-  padding: 0;
-}
-
-.record-type__option { flex: 1; }
-
-.record-type__option input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.record-type__option span {
-  display: block;
-  padding: 8px 0;
-  font-size: 14px;
-  text-align: center;
-  color: var(--wiki-muted);
-  background: var(--wiki-bg);
-  border: 1px solid var(--wiki-line-l);
-  cursor: pointer;
-}
-.record-type__option:first-child span { border-radius: 4px 0 0 4px; }
-.record-type__option:last-child span  { border-radius: 0 4px 4px 0; border-left: none; }
-
-.record-type__option input:checked + span {
-  color: var(--wiki-text);
-  font-weight: 700;
-  background: var(--wiki-white);
-  box-shadow: inset 0 -2px 0 var(--accent);
-}
-.record-type__option input:focus-visible + span {
-  outline: 2px solid var(--wiki-link);
-  outline-offset: 1px;
-}
-
 /* ---------- 記録一覧：人物 / 思い出 の小見出し ---------- */
 
 .people-group-title {
@@ -289,3 +247,61 @@
   color: var(--wiki-muted);
 }
 .people-group-title:first-child { margin-top: 0; }
+
+/* ---------- 「何を記録しますか？」の選択肢 ----------
+   人物 / 思い出 を、説明付きの大きなボタンで選ぶ */
+
+.type-choices {
+  display: grid;
+  gap: 10px;
+  padding: 0 20px 20px;
+}
+
+.type-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  font-family: inherit;
+  text-align: left;
+  color: var(--wiki-text);
+  background: var(--wiki-white);
+  border: 1px solid var(--wiki-line);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.type-choice:hover:not(:disabled) {
+  border-color: var(--wiki-link);
+  background: #f8f9fa;
+}
+.type-choice:focus-visible { outline: 2px solid var(--wiki-link); outline-offset: 1px; }
+.type-choice:disabled { cursor: default; opacity: 0.7; }
+
+.type-choice__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: var(--wiki-link);
+  background: #eaf3ff;
+  border-radius: 50%;
+}
+.type-choice__icon svg { width: 22px; height: 22px; }
+
+.type-choice__body { flex: 1; min-width: 0; }
+
+.type-choice__name {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.type-choice__desc {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--wiki-muted);
+}
