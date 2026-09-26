@@ -1,8 +1,9 @@
 /* ==========================================================
-   longshot.ts  ―  記事（Wikipedia風の部分）をそのまま画像にする
+   longshot.ts  ―  スクショ：記事（Wikipedia風の部分）を画像にする
    ----------------------------------------------------------
    画面に見えている範囲だけでなく、記事の最初から最後までを
    いま表示されている見た目のまま、縦長の画像1枚にします。
+   上にロゴ、下に「ファミペディアで作成・日付」を添えます。
    ========================================================== */
 
 /** iPhoneのSafariは、これより大きい画像を作ろうとすると真っ白になる */
@@ -23,12 +24,31 @@ export async function captureArticle(article: HTMLElement): Promise<Blob> {
   frame.style.width = `${article.offsetWidth}px`;
   frame.setAttribute('aria-hidden', 'true');
 
+  const brand = document.createElement('div');
+  brand.className = 'shot-brand';
+  brand.innerHTML =
+    '<span class="logo-mark">F</span>'
+    + '<span class="logo-text"><strong>ファミペディア</strong><small>家族の百科事典</small></span>';
+
   const clone = article.cloneNode(true) as HTMLElement;
   clone.querySelectorAll(NOT_IN_IMAGE).forEach((el) => el.remove());
   clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
   // 追加直後の黄色いハイライトが写り込まないようにする
   clone.querySelectorAll('.just-added').forEach((el) => el.classList.remove('just-added'));
-  frame.append(clone);
+  // 記事の下の広い余白は、すぐ下に日付を置くので詰める
+  clone.style.paddingBottom = '12px';
+  const foot = document.createElement('p');
+  foot.className = 'shot-foot';
+  foot.textContent = `ファミペディアで作成 ・ ${todayLabel()}`;
+
+  // ロゴと日付の左右の余白を、記事の本文とそろえる
+  const { paddingLeft, paddingRight } = getComputedStyle(article);
+  for (const el of [brand, foot]) {
+    el.style.paddingLeft = paddingLeft;
+    el.style.paddingRight = paddingRight;
+  }
+
+  frame.append(brand, clone, foot);
   document.body.append(frame);
 
   try {
@@ -45,6 +65,11 @@ export async function captureArticle(article: HTMLElement): Promise<Blob> {
   } finally {
     frame.remove();
   }
+}
+
+function todayLabel(): string {
+  const d = new Date();
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
 

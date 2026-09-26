@@ -350,7 +350,7 @@ a { color: var(--wiki-link); }
   color: var(--wiki-muted);
 }
 
-/* 出典の行。右端に「縦長の画像で保存」を置く */
+/* 出典の行。右端に「スクショ」ボタンを置く */
 .doc-meta {
   display: flex;
   flex-wrap: wrap;
@@ -630,6 +630,23 @@ a { color: var(--wiki-link); }
   left: -10000px;
   top: 0;
   background: var(--wiki-white);
+}
+
+/* スクショの上に入れるロゴ（左右の余白は記事に合わせて longshot.ts で指定） */
+.shot-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--wiki-line-l);
+}
+
+/* スクショの下に入れる「ファミペディアで作成・日付」 */
+.shot-foot {
+  padding-block: 0 16px;
+  font-size: 11px;
+  color: var(--wiki-muted);
+  text-align: right;
 }
 
 /* ==========================================================

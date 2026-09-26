@@ -329,7 +329,7 @@ function resizeImage(file: File, maxWidth: number, quality: number): Promise<str
 
 
 /* ----------------------------------------------------------
-   縦長の画像で保存
+   スクショ（記事全体を縦長の画像にする）
    ---------------------------------------------------------- */
 
 const elShotBtn   = $<HTMLButtonElement>('#btn-shot');
@@ -355,7 +355,7 @@ elShotBtn.addEventListener('click', () => {
     })
     .finally(() => {
       elShotBtn.disabled = false;
-      elShotBtn.textContent = '縦長の画像で保存';
+      elShotBtn.textContent = 'スクショ';
     });
 });
 
