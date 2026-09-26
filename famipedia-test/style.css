@@ -836,3 +836,14 @@ a { color: var(--wiki-link); }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ==========================================================
+   Wikipedia風の内部リンク
+   ========================================================== */
+.wiki-link {
+  color: var(--wiki-link);
+  text-decoration: none;
+}
+.wiki-link:hover {
+  text-decoration: underline;
+}

@@ -21,11 +21,16 @@ export const SECTION_LABEL: Record<SectionId, string> = {
 const $ = <T extends HTMLElement>(sel: string): T =>
   document.querySelector<T>(sel)!;
 
-/** 入力文字をそのままHTMLに入れると危ないので無害化する */
+/** 入力文字をそのままHTMLに入れると危ないので無害化し、Wikipedia風のリンクを作る */
 function esc(s: string): string {
   const d = document.createElement('div');
   d.textContent = s;
-  return d.innerHTML;
+  
+  // [[キーワード]] を <a href="https://ja.wikipedia.org/wiki/キーワード" class="wiki-link">キーワード</a> に変換
+  let html = d.innerHTML;
+  html = html.replace(/\[\[(.*?)\]\]/g, '<a href="https://ja.wikipedia.org/wiki/$1" target="_blank" class="wiki-link" rel="noopener noreferrer">$1</a>');
+  
+  return html;
 }
 
 /** 文末に「。」が無ければ付ける */
