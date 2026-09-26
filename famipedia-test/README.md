@@ -53,8 +53,12 @@ src/
  ├ render.ts            記事ページの組み立て
  ├ longshot.ts          スクショ：記事（Wikipedia風の部分）を見たままの縦長画像1枚にする
  ├ main.ts              画面の司令塔
- └ donate.ts            支援ページの画面切り替え
+ ├ donate.ts            支援ページの画面切り替え
+ ├ memory.ts            思い出ページ（公園・お店など、Wikipediaに無い場所）
+ ├ links.ts             本文の言葉をリンクにする（思い出ページ優先、無ければWikipedia）
+ └ image.ts             写真を縮めてから保存する道具
 donate.html / donate.css  支援ページ（Wikipediaの寄付ページのパロディ。実際の決済はしない）
+memory.html / memory.css  思い出ページ。タイトル・別の呼び名が本文に出てくると自動でリンクになる
 server/
  └ index.example.js     サーバー側の雛形（AI担当用）
 ```

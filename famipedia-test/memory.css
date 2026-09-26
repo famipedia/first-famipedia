@@ -1,0 +1,112 @@
+/* ==========================================================
+   memory.css ― 思い出ページ（memory.html）
+   ----------------------------------------------------------
+   記事・基礎情報ボックス・モーダルなどの見た目は style.css の
+   ものをそのまま使い、ここには思い出ページだけの部品を書きます。
+   必ず style.css と一緒に読み込んでください。
+   ========================================================== */
+
+.memory-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-top: var(--bar-h);
+}
+
+.memory-page .doc-body p { margin-bottom: 12px; }
+
+/* 右に回り込ませた基礎情報ボックスより本文が短くても、記事の枠を伸ばす */
+.memory-page .doc::after { content: ""; display: block; clear: both; }
+
+/* ---------- 写真（基礎情報ボックスの中） ---------- */
+
+.gallery { margin: 8px; }
+
+.gallery__main {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  background: var(--wiki-white);
+  border: 1px solid var(--wiki-line-l);
+}
+
+.gallery__caption {
+  padding: 6px 2px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--wiki-muted);
+  text-align: center;
+}
+.gallery__caption:empty { display: none; }
+
+.gallery__thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.gallery__thumb {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: var(--wiki-white) center / cover no-repeat;
+  border: 1px solid var(--wiki-line-l);
+  cursor: pointer;
+  opacity: 0.7;
+}
+.gallery__thumb:hover { opacity: 1; }
+.gallery__thumb.is-active {
+  opacity: 1;
+  outline: 2px solid var(--wiki-link);
+  outline-offset: 1px;
+}
+
+/* ---------- 編集モーダル ---------- */
+
+.edit-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--wiki-muted);
+}
+
+.photo-editor { list-style: none; }
+
+.photo-editor__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.photo-editor__item img {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border: 1px solid var(--wiki-line-l);
+}
+
+.photo-editor__item .edit-text {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+}
+
+.photo-editor__remove {
+  flex: 0 0 auto;
+  padding: 6px 4px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #d73333;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.photo-add {
+  min-height: 44px;
+  font-size: 14px;
+}
