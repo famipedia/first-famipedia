@@ -122,10 +122,6 @@ function openMenu(btn: HTMLButtonElement): void {
   menuButton = btn;
   btn.setAttribute('aria-expanded', 'true');
 
-  // 共有（スクショ）は人物の記事ページの機能なので、思い出では出さない
-  const target = currentPeople.find((p) => p.id === menuPersonId);
-  $('#menu-share').hidden = target?.type === 'memory';
-
   // ボタンの右下にそろえて出す（画面の右端からはみ出さないように）
   const r = btn.getBoundingClientRect();
   elMenu.hidden = false;
@@ -159,10 +155,13 @@ document.addEventListener('click', (e) => {
   if (!elMenu.contains(t) && !t.closest('.person-menu-btn')) closeMenu();
 });
 
-// 共有：記事ページを開き、そこでスクショを撮る
+// 共有：記事ページ（思い出なら思い出ページ）を開き、そこでスクショを撮る
 $('#menu-share').addEventListener('click', () => {
   if (!menuPersonId) return;
-  location.href = `./index.html?person=${encodeURIComponent(menuPersonId)}&shot=1`;
+  const target = currentPeople.find((p) => p.id === menuPersonId);
+  location.href = target?.type === 'memory'
+    ? `${memoryUrl(menuPersonId)}&shot=1`
+    : `./index.html?person=${encodeURIComponent(menuPersonId)}&shot=1`;
 });
 
 $('#menu-delete').addEventListener('click', () => {

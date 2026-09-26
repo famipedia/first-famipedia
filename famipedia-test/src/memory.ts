@@ -12,6 +12,7 @@ import { auth } from './firebaseConfig';
 import { listPeople, loadMemory, saveMemory } from './db';
 import { esc, linkify, setLinkTargets } from './links';
 import { resizeImage } from './image';
+import { captureArticle, saveImage, imageFileName } from './longshot';
 import type { MemoryDoc, MemoryPhoto } from './types';
 
 const $ = <T extends HTMLElement>(sel: string): T =>
@@ -250,6 +251,57 @@ $<HTMLButtonElement>('#me-save').addEventListener('click', (e) => {
 
 
 /* ----------------------------------------------------------
+   スクショ（記事ページと同じく、ページ全体を縦長の画像にする）
+   ---------------------------------------------------------- */
+
+const elShotBtn   = $<HTMLButtonElement>('#btn-shot');
+const elShotLabel = elShotBtn.querySelector<HTMLSpanElement>('.doc-shot__label')!;
+const elShotModal = $<HTMLDivElement>('#shot-modal');
+const elShotImg   = $<HTMLImageElement>('#shot-img');
+
+let shotBlob: Blob | null = null;
+
+elShotBtn.addEventListener('click', () => {
+  if (elShotBtn.disabled) return;
+  elShotBtn.disabled = true;
+  // カメラのアイコンは残したまま、文字だけ変える
+  elShotLabel.textContent = '作成中…';
+
+  captureArticle($<HTMLElement>('.doc'))
+    .then((blob) => {
+      shotBlob = blob;
+      elShotImg.src = URL.createObjectURL(blob);
+      elShotModal.hidden = false;
+    })
+    .catch((err) => {
+      console.error(err);
+      toast('画像を作れませんでした。もう一度お試しください');
+    })
+    .finally(() => {
+      elShotBtn.disabled = false;
+      elShotLabel.textContent = 'スクショ';
+    });
+});
+
+function closeShot(): void {
+  elShotModal.hidden = true;
+  if (elShotImg.src) URL.revokeObjectURL(elShotImg.src);
+  elShotImg.removeAttribute('src');
+  shotBlob = null;
+}
+
+$('#shot-close').addEventListener('click', closeShot);
+elShotModal.addEventListener('click', (e) => {
+  if (e.target === elShotModal) closeShot();
+});
+
+$('#shot-save').addEventListener('click', () => {
+  if (!shotBlob || !memory) return;
+  void saveImage(shotBlob, imageFileName(memory.title));
+});
+
+
+/* ----------------------------------------------------------
    短い通知
    ---------------------------------------------------------- */
 
@@ -316,6 +368,26 @@ async function boot(id: string, uid: string): Promise<void> {
 
   render();
 
+  const params = new URLSearchParams(location.search);
+
+  // 記録一覧の ⋯ →「共有」から来たときは、表示してすぐスクショを撮る。
+  // 再読み込みでもう一度撮らないよう、URLから shot=1 を外しておく
+  if (params.get('shot') === '1') {
+    params.delete('shot');
+    history.replaceState(null, '', `${location.pathname}?${params}`);
+    waitForImages().then(() => elShotBtn.click());
+    return;
+  }
+
   // 作ったばかりなら、すぐに編集画面を開く
-  if (new URLSearchParams(location.search).get('new') === '1') openEdit();
+  if (params.get('new') === '1') openEdit();
+}
+
+/** 写真の読み込みが終わってから撮らないと、写真が空白で写ってしまう */
+function waitForImages(): Promise<void> {
+  const imgs = [...document.querySelectorAll<HTMLImageElement>('.doc img')];
+  return Promise.all(imgs.map((img) => img.complete
+    ? Promise.resolve()
+    : new Promise<void>((r) => { img.onload = img.onerror = () => r(); }),
+  )).then(() => undefined);
 }

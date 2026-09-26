@@ -30,7 +30,17 @@
 <main class="memory-page">
   <article class="doc">
     <h1 class="doc-title" id="memory-title">読み込み中…</h1>
-    <p class="doc-from">出典: Famipedia（ファミペディア）</p>
+    <div class="doc-meta">
+      <p class="doc-from">出典: Famipedia（ファミペディア）</p>
+      <!-- 記事ページ（index.html）と同じスクショボタン -->
+      <button type="button" id="btn-shot" class="link-btn small doc-shot" style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #54595d;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+          <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+        <span class="doc-shot__label" style="font-size: 10px; line-height: 1;">スクショ</span>
+      </button>
+    </div>
 
     <!-- 基礎情報ボックス（右上の表） -->
     <aside class="infobox" id="memory-infobox">
@@ -63,6 +73,23 @@
 </main>
 
 <div class="toast" id="toast" hidden></div>
+
+<!-- スクショの確認（記事ページと同じ） -->
+<div class="modal" id="shot-modal" hidden>
+  <div class="modal-box modal-box-wide" role="dialog" aria-modal="true" aria-labelledby="shot-title">
+    <p class="modal-title" id="shot-title">スクショができました</p>
+    <p class="modal-text">
+      「保存する」を押してください。うまくいかないときは、画像を長押しして保存できます。
+    </p>
+    <div class="shot-preview">
+      <img id="shot-img" alt="思い出ページ全体の画像" />
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="shot-close">閉じる</button>
+      <button type="button" class="btn btn-primary" id="shot-save">保存する</button>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================
      編集モーダル
