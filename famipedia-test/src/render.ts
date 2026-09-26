@@ -153,7 +153,7 @@ export function render(highlightId?: string): void {
   badge.textContent = String(count);
   badge.hidden = count === 0;
 
-  // 記録が2件たまったら、ヘッダーの下に「孫を支援する」帯を出す
+  // 記録が2件たまったら、ヘッダーの下に寄付の帯を出す
   updateDonateBanner(count);
 }
 
