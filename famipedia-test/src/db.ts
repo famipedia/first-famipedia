@@ -10,7 +10,7 @@
 
 import {
   collection, doc, getDoc, getDocs, addDoc, setDoc,
-  query, where, orderBy,
+  query, where,
 } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import type { PersonDoc, PersonSummary, Store } from './types';
@@ -46,27 +46,26 @@ export async function createPerson(ownerId: string, name = ''): Promise<string> 
 
 /** ログイン中の人が持っている記録の一覧（新しい順）
  *
- *  ※ もし実行時にコンソールへ「インデックスが必要です」という
- *     エラーとリンクが出た場合は、そのリンクをクリックすれば
- *     Firebase側が自動でインデックスを作ってくれます。 */
+ *  where と orderBy を組み合わせると、Firestore側に「複合インデックス」を
+ *  作っておかないと読み込みが失敗します。1人が持つ記録は多くないので、
+ *  並べ替えはここ（ブラウザ側）で行い、インデックスを不要にしています。 */
 export async function listPeople(ownerId: string): Promise<PersonSummary[]> {
-  const q = query(
-    peopleRef,
-    where('ownerId', '==', ownerId),
-    orderBy('updatedAt', 'desc'),
-  );
+  const q = query(peopleRef, where('ownerId', '==', ownerId));
   const snap = await getDocs(q);
 
-  return snap.docs.map((d) => {
+  const people = snap.docs.map((d) => {
     const data = d.data() as Omit<PersonDoc, 'id'>;
     return {
       id: d.id,
       name: data.info?.name || '名前未入力',
       photo: data.photo || '',
       answerCount: data.answers?.length ?? 0,
-      updatedAt: data.updatedAt,
+      updatedAt: data.updatedAt ?? '',
     };
   });
+
+  // ISO形式の日時は文字列のまま比べれば新しい順に並ぶ
+  return people.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }
 
 /** 記録を1件読み込む。無ければ null */

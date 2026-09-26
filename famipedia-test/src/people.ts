@@ -36,8 +36,11 @@ async function loadList(uid: string): Promise<void> {
     renderList(people);
   } catch (err) {
     console.error(err);
+    // 原因を調べやすいよう、Firebaseのエラーコード（permission-denied など）も出す
+    const code = (err as { code?: string }).code ?? String(err);
     elList.innerHTML =
-      '<p class="empty">読み込みに失敗しました。ページを再読み込みしてください。</p>';
+      '<p class="empty">読み込みに失敗しました。ページを再読み込みしてください。'
+      + `<br><small>（${escapeHtml(code)}）</small></p>`;
   }
 }
 
