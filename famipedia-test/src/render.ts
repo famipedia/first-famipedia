@@ -9,12 +9,11 @@ import type { SectionId, Answer } from './types';
 import { store, findQuestion } from './store';
 import { updateDonateBanner } from './donateBanner';
 
-export const SECTIONS: SectionId[] = ['summary', 'timeline', 'episode'];
+export const SECTIONS: SectionId[] = ['summary', 'timeline'];
 
 export const SECTION_LABEL: Record<SectionId, string> = {
   summary:  '概要',
   timeline: '来歴・生涯',
-  episode:  '人物・エピソード',
 };
 
 /** 要素を取ってくる短縮形 */
@@ -65,8 +64,9 @@ function leadParagraph(): string {
    ---------------------------------------------------------- */
 
 export function sectionOf(a: Answer): SectionId {
-  if (a.result) return a.result.section;
-  return findQuestion(a.questionId)?.section ?? 'episode';
+  const sec = a.result?.section ?? findQuestion(a.questionId)?.section;
+  // 以前の「人物・エピソード」「伝えたいこと」で保存された記録も、来歴・生涯に出す
+  return sec === 'summary' ? 'summary' : 'timeline';
 }
 
 /** 記事に載せる文章 */

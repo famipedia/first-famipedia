@@ -7,7 +7,7 @@
    ========================================================== */
 
 /** 記事のどのセクションに入れるか */
-export type SectionId = 'summary' | 'timeline' | 'episode';
+export type SectionId = 'summary' | 'timeline';
 
 /** 基礎情報ボックス（記事の右上に出る表） */
 export interface PersonInfo {

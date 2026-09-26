@@ -10,12 +10,12 @@
       "followUp": "そう思うようになったきっかけはありますか？"
     },
     "q-house": {
-      "section": "episode",
+      "section": "timeline",
       "template": "幼少期を過ごした家について、{answer}と振り返っている。",
       "followUp": "その家で一番好きだった場所はどこでしたか？"
     },
     "q-play": {
-      "section": "episode",
+      "section": "timeline",
       "template": "子どもの頃の遊びについては、{answer}と語る。",
       "followUp": "一緒に遊んだ友達とは、その後も会いましたか？"
     },
@@ -30,7 +30,7 @@
       "followUp": "初めてお給料をもらったとき、何に使いましたか？"
     },
     "q-meet": {
-      "section": "episode",
+      "section": "timeline",
       "template": "配偶者との出会いについて、{answer}と語っている。",
       "followUp": "第一印象はどんな感じでしたか？"
     },
@@ -40,12 +40,12 @@
       "followUp": "新婚の頃、どんな家に住んでいましたか？"
     },
     "q-raise": {
-      "section": "episode",
+      "section": "timeline",
       "template": "子育てについては、{answer}と振り返る。",
       "followUp": "子どもたちが小さかった頃、家族でよく行った場所はありますか？"
     },
     "q-food": {
-      "section": "episode",
+      "section": "timeline",
       "template": "得意料理について、{answer}と話す。",
       "followUp": "その料理は誰から教わったものですか？"
     },
@@ -55,12 +55,12 @@
       "followUp": "新しい土地に慣れるまで、どのくらいかかりましたか？"
     },
     "q-happy": {
-      "section": "episode",
+      "section": "timeline",
       "template": "人生で最もうれしかった出来事として、{answer}を挙げている。",
       "followUp": "そのとき、周りの家族はどんな様子でしたか？"
     },
     "q-hard": {
-      "section": "episode",
+      "section": "timeline",
       "template": "苦しかった時期について、{answer}と語る。",
       "followUp": null
     },
@@ -70,24 +70,24 @@
       "followUp": "その頃から始めた趣味はありますか？"
     },
     "q-now": {
-      "section": "episode",
+      "section": "timeline",
       "template": "近況として、{answer}と話している。",
       "followUp": null
     },
     "q-value": {
-      "section": "episode",
+      "section": "timeline",
       "template": "長く大切にしてきた考え方として、{answer}を挙げる。",
       "followUp": "その考えを誰かから教わったのですか？"
     },
     "q-msg": {
-      "section": "episode",
+      "section": "timeline",
       "template": "孫へのことばとして、{answer}と述べている。",
       "followUp": null
     }
   },
 
   "fallback": {
-    "section": "episode",
+    "section": "timeline",
     "template": "{answer}",
     "followUp": null
   }

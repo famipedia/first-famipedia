@@ -1,66 +1,66 @@
 {
-  "_README": "質問データ。内容を増やしたり言い回しを変えたりするときは、このファイルだけ編集すればOKです。id は保存の目印なので、一度決めたら変えないでください。質問は幼少期から今までの順に並べています。",
+  "_README": "質問データ。内容を増やしたり言い回しを変えたりするときは、このファイルだけ編集すればOKです。id は保存の目印なので、一度決めたら変えないでください。質問は幼少期から今までの順に並べています。はい・いいえで終わらず、パッと思い出せる質問にしています。",
 
   "questions": [
     {
-      "id": "q-prank",
-      "section": "episode",
-      "text": "子どもの頃、一番怒られたイタズラは何ですか？",
-      "hint": "何歳くらいのことか、誰に怒られたかも聞けたら"
-    },
-    {
       "id": "q-nickname",
-      "section": "episode",
-      "text": "当時のあだ名は何でしたか？",
+      "section": "timeline",
+      "text": "当時のあだ名は何だった？",
       "hint": "そう呼ばれた理由も"
     },
     {
-      "id": "q-popular",
-      "section": "episode",
-      "text": "クラスで一番人気だったのは、どんな子でしたか？",
-      "hint": "本人はどんな立ち位置だったかも"
-    },
-    {
-      "id": "q-firstlove",
-      "section": "episode",
-      "text": "初恋の人は、どんな人でしたか？",
-      "hint": "何歳のときか、どこで出会ったかも"
-    },
-    {
-      "id": "q-secret",
-      "section": "episode",
-      "text": "親にナイショにしていたこと、今なら言えますか？",
-      "hint": "話しにくそうなら飛ばしてOK"
-    },
-    {
-      "id": "q-spend",
+      "id": "q-allowance",
       "section": "timeline",
-      "text": "若い頃、一番お金をつかったものは何ですか？",
-      "hint": "何年頃か、いくらくらいだったかも"
+      "text": "子どもの頃のおこづかいは、いくらだった？",
+      "hint": "何に使っていたかも"
     },
     {
-      "id": "q-propose",
+      "id": "q-dagashi",
       "section": "timeline",
-      "text": "プロポーズの言葉は何でしたか？",
-      "hint": "言った側でも言われた側でも。何年頃のことかも"
+      "text": "駄菓子屋でいつも買ってたお菓子の名前は？",
+      "hint": "いくらだったかも覚えていたら"
     },
     {
-      "id": "q-fight",
-      "section": "episode",
-      "text": "夫婦ゲンカで、一番大きかったのはどんなこと？",
-      "hint": "どうやって仲直りしたかも。話しにくそうなら飛ばしてOK"
+      "id": "q-bento",
+      "section": "timeline",
+      "text": "遠足のお弁当には、何が入ってた？",
+      "hint": "誰が作ってくれたかも"
     },
     {
-      "id": "q-oops",
-      "section": "episode",
-      "text": "人生で一番「やっちゃった」と思った失敗は？",
-      "hint": "今だから笑える話で大丈夫"
+      "id": "q-detour",
+      "section": "timeline",
+      "text": "学校帰りに、よく寄り道したのはどこ？",
+      "hint": "誰と行っていたかも"
     },
     {
-      "id": "q-reborn",
-      "section": "episode",
-      "text": "生まれ変わっても、今の相手と結婚しますか？",
-      "hint": "理由も聞けたら"
+      "id": "q-record",
+      "section": "timeline",
+      "text": "初めて買ったレコードは、誰の曲だった？",
+      "hint": "何歳のとき、どこで買ったかも"
+    },
+    {
+      "id": "q-date-outfit",
+      "section": "timeline",
+      "text": "初めてのデートには、どんな服で行った？",
+      "hint": "どこに行ったかも"
+    },
+    {
+      "id": "q-first-pay",
+      "section": "timeline",
+      "text": "初めてのお給料は、いくらだった？",
+      "hint": "何年頃か、何に使ったかも"
+    },
+    {
+      "id": "q-first-word",
+      "section": "timeline",
+      "text": "子どもが初めてしゃべった言葉は？",
+      "hint": "そのときの様子も"
+    },
+    {
+      "id": "q-keepsake",
+      "section": "timeline",
+      "text": "今も捨てられずに取ってある物は？",
+      "hint": "いつ、どうやって手に入れた物かも"
     }
   ]
 }
