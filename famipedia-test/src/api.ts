@@ -10,8 +10,7 @@
    画面側のコードは一行も変えなくて済みます。
    ========================================================== */
 
-import type { GenerateRequest, GenerateResult, SectionId } from './types';
-import mockData from './mockData.json';
+import type { GenerateRequest, GenerateResult, PersonInfo } from './types';
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 import { app } from './firebaseConfig';
 
@@ -19,46 +18,63 @@ import { app } from './firebaseConfig';
 export const USE_MOCK = false;
 
 
-/* ----------------------------------------------------------
-   外から呼ぶのはこの関数だけです
-   ---------------------------------------------------------- */
-
-export async function generateArticle(
-  questionId: string,
-  req: GenerateRequest,
-): Promise<GenerateResult> {
-
-  if (USE_MOCK) {
-    return mockGenerate(questionId, req);
-  }
-
-  // Firebase AI Logics の初期化
-  const ai = getAI(app, {
-    backend: new GoogleAIBackend()
-  });
+// 追加質問（FollowUp）だけをAIに考えさせる
+export async function generateFollowUp(
+  req: GenerateRequest
+): Promise<string | null> {
+  const ai = getAI(app, { backend: new GoogleAIBackend() });
   const model = getGenerativeModel(ai, {
-    model: 'gemini-3.7-flash',
-    generationConfig: {
-      responseMimeType: 'application/json',
-    }
+    model: 'gemini-3.8-flash',
+    generationConfig: { responseMimeType: 'application/json' }
   });
 
   const prompt = `
+あなたはインタビュアーです。
+対象者: ${req.person?.name || '不明'} (${req.person?.birth || '不明'})
+質問: ${req.question}
+回答: ${req.answer}
+
+この回答をさらに深掘りするための、短くて答えやすい追加質問を1つだけ考え、以下のJSON形式で返してください。
+十分に話題が尽きている、または深掘り不要な場合は null を返してください。前後に説明を付けないこと。
+
+{
+  "followUp": "追加の質問"
+}
+  `.trim();
+
+  try {
+    const result = await model.generateContent(prompt);
+    let text = result.response.text();
+    text = text.replace(/^```(json)?\n?/i, '').replace(/\n?```$/i, '').trim();
+    const data = JSON.parse(text);
+    return data.followUp || null;
+  } catch (err) {
+    console.error('FollowUp Error:', err);
+    return null; // 失敗しても進行は妨げない
+  }
+}
+
+// 複数のQ&A履歴から1つのまとめ記事を作らせる
+export async function generateArticleSummary(
+  history: { question: string; answer: string }[],
+  person: PersonInfo
+): Promise<GenerateResult> {
+  const ai = getAI(app, { backend: new GoogleAIBackend() });
+  const model = getGenerativeModel(ai, {
+    model: 'gemini-3.8-flash',
+    generationConfig: { responseMimeType: 'application/json' }
+  });
+
+  const historyText = history.map(h => `【質問】${h.question}\n【回答】${h.answer}`).join('\n\n');
+
+  const prompt = `
 あなたは、家族の聞き書きをwikipediaの記事にまとめる編集者です。
+対象者: ${person.name || '不明'} (${person.birth || '不明'})
 
-【対象者】
-名前: ${req.person?.name || '不明'}
-生年: ${req.person?.birth || '不明'}
-出身: ${req.person?.place || '不明'}
+以下は一連のインタビューのやり取りです：
+${historyText}
 
-【質問】
-${req.question}
-
-【本人の答え（話し言葉のまま）】
-${req.answer}
-
-この答えを、wikipediaの記述に整えてください。次の規則を守ること。
-
+これらをすべて踏まえて、1つのwikipediaの記述に整えてください。次の規則を守ること。
 - 事実を足さない。答えに書かれていないことは絶対に書かない
 - 話し言葉を書き言葉に直す。一人称は使わず、三人称で書く
 - 1〜3文に収める
@@ -70,61 +86,20 @@ ${req.answer}
   "section": "summary | timeline | episode | message のいずれか",
   "year": "答えに年が含まれていれば「1972年」の形。無ければ null",
   "text": "整えた本文",
-  "followUp": "もう一歩踏み込むための質問を1つ。不要なら null"
+  "followUp": null
 }
   `.trim();
 
   try {
     const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    let text = result.response.text();
+    text = text.replace(/^```(json)?\n?/i, '').replace(/\n?```$/i, '').trim();
     const data = JSON.parse(text) as GenerateResult;
-
-    if (typeof data.text !== 'string') {
-      throw new Error('返ってきたデータの形が想定と違います');
-    }
-
     return data;
   } catch (err) {
-    console.error('AI Error:', err);
-    throw new Error('AIの処理に失敗しました');
+    console.error('Summary Error:', err);
+    throw new Error('まとめ処理に失敗しました');
   }
-}
-
-
-/* ----------------------------------------------------------
-   仮の返事を作る部分（サーバーができたら使われなくなります）
-   ---------------------------------------------------------- */
-
-type MockEntry = {
-  section: string;
-  template: string;
-  followUp: string | null;
-};
-
-const table = mockData.byQuestion as Record<string, MockEntry>;
-
-async function mockGenerate(
-  questionId: string,
-  req: GenerateRequest,
-): Promise<GenerateResult> {
-
-  // 本物のサーバーは一瞬では返りません。
-  // 待ち時間の見た目を確かめられるよう、わざと少し遅らせています。
-  await sleep(600 + Math.random() * 500);
-
-  const entry = table[questionId] ?? (mockData.fallback as MockEntry);
-  const answer = tidy(req.answer);
-
-  return {
-    section: entry.section as SectionId,
-    year: extractYear(answer),
-    text: entry.template.replace('{answer}', answer),
-    followUp: entry.followUp,
-  };
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 

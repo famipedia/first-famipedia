@@ -94,17 +94,21 @@
 
       <!-- 基礎情報ボックス -->
       <aside class="infobox">
-        <div class="infobox-title" id="info-name">—</div>
+        <div class="infobox-title">
+          <span id="info-name">—</span>
+          <button type="button" id="btn-settings" class="infobox-edit" title="基本情報を編集">✎</button>
+        </div>
         <button type="button" class="infobox-photo" id="photo-slot">
           <span class="photo-hint">写真を追加</span>
         </button>
         <input type="file" id="photo-input" accept="image/*" hidden />
         <table class="infobox-table">
           <tbody>
-            <tr><th>生まれ</th><td id="info-birth">—</td></tr>
+            <tr><th>生年月日</th><td id="info-birth">—</td></tr>
             <tr><th>出身地</th><td id="info-place">—</td></tr>
-            <tr><th>仕事</th><td id="info-job">—</td></tr>
-            <tr><th>家族</th><td id="info-family">—</td></tr>
+            <tr><th>職業</th><td id="info-job">—</td></tr>
+            <tr><th>身長</th><td id="info-height">—</td></tr>
+            <tr><th>血液型</th><td id="info-blood">—</td></tr>
           </tbody>
         </table>
       </aside>
@@ -196,6 +200,28 @@
     <div class="modal-actions">
       <button type="button" class="btn" id="export-close">閉じる</button>
       <button type="button" class="btn btn-primary" id="export-copy">コピー</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     基本情報設定モーダル
+     ============================================================ -->
+<div class="modal" id="settings-modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <p class="modal-title" id="settings-title">基本情報の設定</p>
+    <p class="modal-text">記事の右上に出る情報を設定します。</p>
+    <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left; margin-bottom: 1rem;">
+      <label>名前: <input type="text" id="set-name" class="ask-input" style="padding: 0.5rem; min-height: 0;"></label>
+      <label>生まれ: <input type="text" id="set-birth" class="ask-input" style="padding: 0.5rem; min-height: 0;" placeholder="例: 1950年5月1日"></label>
+      <label>出身地: <input type="text" id="set-place" class="ask-input" style="padding: 0.5rem; min-height: 0;" placeholder="例: 東京都"></label>
+      <label>職業: <input type="text" id="set-job" class="ask-input" style="padding: 0.5rem; min-height: 0;" placeholder="例: 教員"></label>
+      <label>身長: <input type="text" id="set-height" class="ask-input" style="padding: 0.5rem; min-height: 0;" placeholder="例: 170cm"></label>
+      <label>血液型: <input type="text" id="set-blood" class="ask-input" style="padding: 0.5rem; min-height: 0;" placeholder="例: A型"></label>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="settings-cancel">閉じる</button>
+      <button type="button" class="btn btn-primary" id="settings-save">保存する</button>
     </div>
   </div>
 </div>

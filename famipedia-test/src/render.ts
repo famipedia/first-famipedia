@@ -48,7 +48,6 @@ function leadParagraph(): string {
   s += 'は、';
 
   if (i.place)  s += period(`${i.place}出身`);
-  if (i.family) s += period(`家族は${i.family}`);
 
   if (s.endsWith('は、')) s = s.slice(0, -2) + 'についての記録。';
   return s;
@@ -84,7 +83,8 @@ export function render(highlightId?: string): void {
   $('#info-birth').textContent  = i.birth  || '—';
   $('#info-place').textContent  = i.place  || '—';
   $('#info-job').textContent    = i.job    || '—';
-  $('#info-family').textContent = i.family || '—';
+  $('#info-height').textContent = i.height || '—';
+  $('#info-blood').textContent  = i.blood  || '—';
 
   // --- 写真 ---
   const slot = $('#photo-slot');

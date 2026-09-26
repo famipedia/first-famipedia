@@ -87,7 +87,7 @@ elForm.addEventListener('submit', (e) => {
 
   void createPerson(user.uid, name)
     .then((id) => {
-      location.href = `./index.html?person=${encodeURIComponent(id)}`;
+      location.href = `./index.html?person=${encodeURIComponent(id)}&new=1`;
     })
     .catch((err) => {
       console.error(err);

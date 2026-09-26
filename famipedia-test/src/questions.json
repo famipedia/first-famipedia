@@ -3,38 +3,6 @@
 
   "questions": [
     {
-      "id": "q-name",
-      "section": "summary",
-      "field": "name",
-      "infoOnly": true,
-      "text": "記録する方のお名前を教えてください",
-      "hint": "例：田中 一郎（たなか いちろう）"
-    },
-    {
-      "id": "q-birth",
-      "section": "summary",
-      "field": "birth",
-      "infoOnly": true,
-      "text": "生まれたのは何年ですか？",
-      "hint": "例：1951年5月10日。西暦でも元号でも大丈夫です"
-    },
-    {
-      "id": "q-place",
-      "section": "summary",
-      "field": "place",
-      "infoOnly": true,
-      "text": "生まれ育った場所はどこですか？",
-      "hint": "例：東京都。詳しい思い出は後で聞きます"
-    },
-    {
-      "id": "q-family",
-      "section": "summary",
-      "field": "family",
-      "infoOnly": true,
-      "text": "ご家族の構成を教えてください",
-      "hint": "例：妻・好子、子ども2人、孫3人"
-    },
-    {
       "id": "q-intro",
       "section": "summary",
       "text": "自分のことをひとことで言うと、どんな人ですか？",

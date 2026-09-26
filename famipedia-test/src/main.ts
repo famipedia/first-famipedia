@@ -12,7 +12,7 @@ import {
   nextQuestion, findQuestion, addAnswer, addFollowUp, progress,
   BASE_QUESTIONS,
 } from './store';
-import { generateArticle } from './api';
+import { generateFollowUp, generateArticleSummary } from './api';
 import { render, SECTION_LABEL } from './render';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
@@ -119,10 +119,28 @@ async function handleSave(): Promise<void> {
     person: { ...store.info },
   };
 
+  let followUpText: string | null = null;
+
   try {
-    // 基礎情報だけの質問はAIに通す必要がないので、そのまま保存
-    if (!q.infoOnly) {
-      answer.result = await generateArticle(q.id, req);
+    if (q.infoOnly) {
+      // 基礎情報(生年月日、名前など)はAIに通さず、そのまま記事として保存する
+      answer.result = {
+        section: q.section,
+        year: null,
+        text: raw,
+        followUp: null
+      };
+    } else {
+      // 通常の質問はAIから追加質問をもらう
+      followUpText = await generateFollowUp(req);
+      
+      // まだ記事化はしないので、一時的にダミーのresultを保存しておく
+      answer.result = {
+        section: q.section,
+        year: null,
+        text: '', // あとで一括で埋める
+        followUp: followUpText
+      };
     }
   } catch (err) {
     // 通信に失敗しても、入力そのものは絶対に失わない
@@ -132,15 +150,56 @@ async function handleSave(): Promise<void> {
 
   addAnswer(answer);
 
-  // AIが追加質問を返してきたら、質問リストに差し込む
-  const followUp = answer.result?.followUp;
-  if (followUp) addFollowUp(followUp, q.id);
+  if (followUpText) addFollowUp(followUpText, q.id);
+
+  // 次の質問が別のトピック（別の基本質問）になる場合、これまでのQ&Aをまとめて記事化する
+  const nextQ = nextQuestion();
+  const currentParentId = q.id.split('-fu-')[0];
+  const nextParentId = nextQ ? nextQ.id.split('-fu-')[0] : null;
+
+  if (currentParentId !== nextParentId && !q.infoOnly) {
+    await triggerSummarize(currentParentId);
+  }
 
   render(q.id);
   showQuestion();
   setBusy(false);
 
-  if (!q.infoOnly) toast('ページに反映しました');
+  if (!q.infoOnly) toast('回答を記録しました');
+}
+
+async function triggerSummarize(parentId: string) {
+  elBtnLabel.textContent = '記事にまとめています…';
+  
+  // 今終わったトピックに関連するすべての回答を取得
+  const topicAnswers = store.answers.filter((a) => a.questionId.split('-fu-')[0] === parentId);
+  if (topicAnswers.length === 0) return;
+
+  const history = topicAnswers.map((a) => ({ question: a.question, answer: a.raw }));
+  
+  try {
+    const summary = await generateArticleSummary(history, store.info);
+    
+    // 最初の回答の result としてまとめ記事を保存
+    if (topicAnswers[0].result) {
+      topicAnswers[0].result.section = summary.section;
+      topicAnswers[0].result.year = summary.year;
+      topicAnswers[0].result.text = summary.text;
+    } else {
+      topicAnswers[0].result = summary;
+    }
+    
+    // 2回目以降の回答（FollowUp）は画面に出さないようにテキストを空にしておく
+    for (let i = 1; i < topicAnswers.length; i++) {
+      if (topicAnswers[i].result) {
+        topicAnswers[i].result!.text = ''; 
+      }
+    }
+    save();
+  } catch(err) {
+    console.error(err);
+    toast('記事のまとめ処理に失敗しました');
+  }
 }
 
 
@@ -275,10 +334,11 @@ function buildExportText(): string {
 
   // 基礎情報
   const facts: string[] = [];
-  if (i.birth)  facts.push(`- 生まれ：${i.birth}`);
+  if (i.birth)  facts.push(`- 生年月日：${i.birth}`);
   if (i.place)  facts.push(`- 出身地：${i.place}`);
-  if (i.job)    facts.push(`- 仕事：${i.job}`);
-  if (i.family) facts.push(`- 家族：${i.family}`);
+  if (i.job)    facts.push(`- 職業：${i.job}`);
+  if (i.height) facts.push(`- 身長：${i.height}`);
+  if (i.blood)  facts.push(`- 血液型：${i.blood}`);
   if (facts.length) lines.push(...facts, '');
 
   (Object.keys(SECTION_LABEL) as (keyof typeof SECTION_LABEL)[]).forEach((sec) => {
@@ -376,6 +436,57 @@ $('#modal-ok').addEventListener('click', () => {
 
 
 /* ----------------------------------------------------------
+   基本情報設定モーダル
+   ---------------------------------------------------------- */
+const elSettingsModal = $<HTMLDivElement>('#settings-modal');
+const inSetName = $<HTMLInputElement>('#set-name');
+const inSetBirth = $<HTMLInputElement>('#set-birth');
+const inSetPlace = $<HTMLInputElement>('#set-place');
+const inSetJob = $<HTMLInputElement>('#set-job');
+const inSetHeight = $<HTMLInputElement>('#set-height');
+const inSetBlood = $<HTMLInputElement>('#set-blood');
+
+function openSettingsModal(): void {
+  inSetName.value = store.info.name || '';
+  inSetBirth.value = store.info.birth || '';
+  inSetPlace.value = store.info.place || '';
+  inSetJob.value = store.info.job || '';
+  inSetHeight.value = store.info.height || '';
+  inSetBlood.value = store.info.blood || '';
+  elSettingsModal.hidden = false;
+}
+
+$('#btn-settings')?.addEventListener('click', openSettingsModal);
+
+$('#settings-cancel')?.addEventListener('click', () => {
+  elSettingsModal.hidden = true;
+});
+
+$('#settings-save')?.addEventListener('click', () => {
+  store.info.name = inSetName.value.trim();
+  store.info.birth = inSetBirth.value.trim();
+  store.info.place = inSetPlace.value.trim();
+  store.info.job = inSetJob.value.trim();
+  store.info.height = inSetHeight.value.trim();
+  store.info.blood = inSetBlood.value.trim();
+  save();
+  render();
+  elSettingsModal.hidden = true;
+  toast('基本情報を保存しました');
+});
+
+elSettingsModal.addEventListener('click', (e) => {
+  if (e.target === elSettingsModal) elSettingsModal.hidden = true;
+});
+
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+  if (e.key === 'Escape') {
+    if (!elModal.hidden) closeModal();
+    if (!elSettingsModal.hidden) elSettingsModal.hidden = true;
+  }
+});
+
+/* ----------------------------------------------------------
    ログアウト
    ---------------------------------------------------------- */
 
@@ -421,4 +532,10 @@ async function boot(id: string): Promise<void> {
 
   render();
   showQuestion();
+  
+  // URLに new=1 があるか、名前が未設定なら初回起動とみなして基本情報モーダルを開く
+  const isNew = new URLSearchParams(location.search).get('new') === '1';
+  if (isNew || !store.info.name) {
+    openSettingsModal();
+  }
 }
