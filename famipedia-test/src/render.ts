@@ -7,6 +7,7 @@
 
 import type { SectionId, Answer } from './types';
 import { store, findQuestion } from './store';
+import { updateDonateBanner } from './donateBanner';
 
 export const SECTIONS: SectionId[] = ['summary', 'timeline', 'episode', 'message'];
 
@@ -158,6 +159,9 @@ export function render(highlightId?: string): void {
   const badge = $('#tab-badge');
   badge.textContent = String(count);
   badge.hidden = count === 0;
+
+  // 記録が2件たまったら、ヘッダーの下に「孫を支援する」帯を出す
+  updateDonateBanner(count);
 }
 
 

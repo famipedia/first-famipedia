@@ -195,6 +195,66 @@ a { color: var(--wiki-link); }
 .pane.is-active { display: block; }
 
 /* ==========================================================
+   「孫を支援する」帯（記録が2件たまるとヘッダーの下に出る）
+   ========================================================== */
+
+.donate-banner {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 14px 44px 14px 18px;
+  background: #e8f2ea;
+  border-bottom: 2px solid var(--accent);
+}
+
+.donate-banner__body { flex: 1 1 260px; min-width: 0; }
+
+.donate-banner__title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+.donate-banner__title span { color: var(--accent); font-size: 18px; }
+
+.donate-banner__text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--wiki-muted);
+}
+
+.donate-banner__btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.donate-banner__btn:active { background: var(--accent-d); }
+
+.donate-banner__close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--wiki-muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* ==========================================================
    質問パネル
    ========================================================== */
 
@@ -791,6 +851,9 @@ a { color: var(--wiki-link); }
 
   /* 両方いつでも表示する */
   .pane { display: block; }
+
+  /* 支援の帯は、記事と質問の両方の上にまたがって置く */
+  .donate-banner { grid-column: 1 / -1; order: 0; padding: 14px 52px 14px 28px; }
 
   /* 記事を左、質問を右に置く */
   .pane-doc { order: 1; border-right: 1px solid var(--wiki-line-l); }
