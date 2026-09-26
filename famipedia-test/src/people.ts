@@ -164,7 +164,7 @@ function openDeleteModal(id: string): void {
 
   deletingId = id;
   elDeleteText.textContent =
-    `「${p.name}」の記録（${p.answerCount} 件）を削除します。`
+    `『${p.name}』の記録を削除します。`
     + '削除した記録は元に戻せません。本当に削除しますか？';
   elDeleteOk.disabled = false;
   elDeleteOk.textContent = '削除する';
