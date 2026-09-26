@@ -348,6 +348,15 @@ a { color: var(--wiki-link); }
 .doc-from {
   font-size: 12.8px;
   color: var(--wiki-muted);
+}
+
+/* 出典の行。右端に「スクショ」ボタンを置く */
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
   margin: 7px 0 16px;
 }
 
@@ -685,6 +694,45 @@ a { color: var(--wiki-link); }
   color: #fff;
 }
 .btn-danger:active { background: #96201f; }
+
+/* ==========================================================
+   縦長の画像
+   ========================================================== */
+
+/* 確認用のプレビュー。縦に長いので枠の中でスクロールさせる */
+.shot-preview {
+  max-height: 55vh;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  border: 1px solid var(--wiki-line-l);
+  background: var(--wiki-bg);
+}
+.shot-preview img { display: block; width: 100%; height: auto; }
+
+/* 撮影用に記事を複製して置く場所。画面の外なので見えない */
+.shot-frame {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  background: var(--wiki-white);
+}
+
+/* スクショの上に入れるロゴ（左右の余白は記事に合わせて longshot.ts で指定） */
+.shot-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--wiki-line-l);
+}
+
+/* スクショの下に入れる「ファミペディアで作成・日付」 */
+.shot-foot {
+  padding-block: 0 16px;
+  font-size: 11px;
+  color: var(--wiki-muted);
+  text-align: right;
+}
 
 /* ==========================================================
    新しく追加された文が光る演出
