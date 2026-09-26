@@ -7,6 +7,7 @@
 
 import type { SectionId, Answer } from './types';
 import { store, findQuestion } from './store';
+import { updateDonateBanner } from './donateBanner';
 
 export const SECTIONS: SectionId[] = ['summary', 'timeline'];
 
@@ -63,8 +64,9 @@ function leadParagraph(): string {
    ---------------------------------------------------------- */
 
 export function sectionOf(a: Answer): SectionId {
-  if (a.result) return a.result.section;
-  return findQuestion(a.questionId)?.section ?? 'timeline';
+  const sec = a.result?.section ?? findQuestion(a.questionId)?.section;
+  // 以前の「人物・エピソード」「伝えたいこと」で保存された記録も、来歴・生涯に出す
+  return sec === 'summary' ? 'summary' : 'timeline';
 }
 
 /** 記事に載せる文章 */
@@ -156,6 +158,9 @@ export function render(highlightId?: string): void {
   const badge = $('#tab-badge');
   badge.textContent = String(count);
   badge.hidden = count === 0;
+
+  // 記録が2件たまったら、ヘッダーの下に「孫を支援する」帯を出す
+  updateDonateBanner(count);
 }
 
 

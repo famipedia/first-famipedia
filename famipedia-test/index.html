@@ -40,6 +40,16 @@
      ============================================================ -->
 <div class="app">
 
+  <!-- 記録が2件たまったら出る「孫を支援する」帯（Wikipediaの募金バナーのパロディ） -->
+  <aside class="donate-banner" id="donate-banner" aria-label="孫への支援のお願い" hidden>
+    <div class="donate-banner__body">
+      <p class="donate-banner__title">孫が、あなたの話を<span id="donate-banner-count">2</span>件記録しました。</p>
+      <p class="donate-banner__text">孫におこづかいをくれるおじいちゃんは、わずか2%です。ご無理のない範囲で、応援してみませんか。</p>
+    </div>
+    <a class="donate-banner__btn" href="./donate.html">孫を支援する</a>
+    <button type="button" class="donate-banner__close" id="donate-banner-close" aria-label="閉じる">×</button>
+  </aside>
+
   <!-- ---------- 質問パネル（スマホの主役） ---------- -->
   <section class="pane pane-ask is-active" id="pane-ask">
 

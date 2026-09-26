@@ -108,7 +108,7 @@ export function addFollowUp(text: string, parentId: string): void {
   store.extraQuestions.push({
     id,
     text,
-    section: parent?.section ?? 'episode',
+    section: parent?.section ?? 'timeline',
     fromAi: true,
   });
   save();
