@@ -12,7 +12,7 @@
 
 import type { GenerateRequest, GenerateResult, SectionId } from './types';
 import mockData from './mockData.json';
-import { getVertexAI, getGenerativeModel } from 'firebase/vertexai';
+import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 import { app } from './firebaseConfig';
 
 /** true = 仮データで動く / false = 本物のサーバーを呼ぶ */
@@ -32,9 +32,11 @@ export async function generateArticle(
     return mockGenerate(questionId, req);
   }
 
-  // Firebase Vertex AI の初期化
-  const vertexAI = getVertexAI(app);
-  const model = getGenerativeModel(vertexAI, {
+  // Firebase AI Logics の初期化
+  const ai = getAI(app, {
+    backend: new GoogleAIBackend()
+  });
+  const model = getGenerativeModel(ai, {
     model: 'gemini-3.7-flash',
     generationConfig: {
       responseMimeType: 'application/json',
