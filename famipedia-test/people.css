@@ -109,8 +109,4 @@
   outline: 2px solid var(--wiki-link);
 }
 
-@media (prefers-color-scheme: dark) {
-  .person-card__photo {
-    background-color: var(--wiki-white);
-  }
-}
+

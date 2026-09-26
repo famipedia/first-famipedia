@@ -363,25 +363,4 @@ a { color: var(--wiki-link); }
 /* ==========================================================
    ダークモード（style.css と同じ配色に合わせています）
    ========================================================== */
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --wiki-bg:     #202122;
-    --wiki-white:  #16181a;
-    --wiki-line:   #54595d;
-    --wiki-line-l: #3a3e42;
-    --wiki-link:   #88a9e8;
-    --wiki-text:   #eaecf0;
-    --wiki-muted:  #a2a9b1;
-    --accent:      #6cc08a;
-    --accent-d:    #55a771;
-    --danger:      #ff8a80;
-    --danger-bg:   #3a1f1e;
-    --danger-line: #5a2e2c;
-  }
-
-  .auth-submit {
-    /* style.css の .btn-primary と同じく、明るい緑地に暗い文字 */
-    color: #11291a;
-  }
-}
+

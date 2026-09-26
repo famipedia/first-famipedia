@@ -655,39 +655,7 @@ a { color: var(--wiki-link); }
    ダークモード（端末の設定に追従）
    ========================================================== */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --wiki-bg:     #202122;
-    --wiki-white:  #16181a;
-    --wiki-line:   #54595d;
-    --wiki-line-l: #3a3e42;
-    --wiki-link:   #88a9e8;
-    --wiki-text:   #eaecf0;
-    --wiki-muted:  #a2a9b1;
-    --accent:      #6cc08a;
-    --accent-d:    #55a771;
 
-    /* ロゴのタイルは暗い画面でも白のまま（アプリアイコンと同じ見え方） */
-    --logo-bg:   #ffffff;
-    --logo-ring: #ffffff;
-    --logo-ink:  #202122;
-  }
-
-  body { background: var(--wiki-white); }
-  .infobox-title { background: #2f3742; }
-  .btn { background: #232629; }
-  .btn-primary { color: #11291a; }
-  .progress { background: #2b2f33; }
-  .ask-badge { background: #22362a; }
-  .tl-item { border-bottom-color: #2b2f33; }
-  .infobox-table th, .infobox-table td { border-top-color: #2b2f33; }
-  .actionbar { background: rgba(22, 24, 26, 0.94); }
-  .toast { background: rgba(234, 236, 240, 0.95); color: #16181a; }
-  @keyframes flash {
-    from { background: #3a3720; }
-    to   { background: transparent; }
-  }
-}
 
 /* ==========================================================
    アニメーションを減らす設定にしている人への配慮
