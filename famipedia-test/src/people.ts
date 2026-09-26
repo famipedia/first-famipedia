@@ -47,7 +47,7 @@ async function loadList(uid: string): Promise<void> {
 function renderList(people: PersonSummary[]): void {
   if (people.length === 0) {
     elList.innerHTML =
-      '<p class="empty">まだ記録がありません。下から新しく始めましょう。</p>';
+      '<p class="empty">まだ記録がありません。さっそく下から作ってみましょう！</p>';
     return;
   }
 
