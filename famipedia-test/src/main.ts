@@ -132,13 +132,18 @@ async function handleSave(): Promise<void> {
       };
     } else {
       // 通常の質問はAIから追加質問をもらう
-      followUpText = await generateFollowUp(req);
+      // ただし、追加質問が永遠に続くのを防ぐため、今の質問がすでに追加質問(fromAi)ならこれ以上の深掘りはしない
+      if (q.fromAi) {
+        followUpText = null;
+      } else {
+        followUpText = await generateFollowUp(req);
+      }
       
       // まだ記事化はしないので、一時的にダミーのresultを保存しておく
       answer.result = {
         section: q.section,
         year: null,
-        text: '', // あとで一括で埋める
+        text: raw, // 後でAIのまとめテキストで上書きされるまでそのまま表示する
         followUp: followUpText
       };
     }

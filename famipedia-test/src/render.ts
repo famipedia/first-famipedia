@@ -122,9 +122,12 @@ export function render(highlightId?: string): void {
     if (lead) parts.push(`<p>${esc(lead)}</p>`);
 
     items.forEach((a) => {
+      const text = textOf(a);
+      if (!text) return; // テキストが空（まとめ済みで隠されている等）のものは描画しない
+
       const hl = a.questionId === highlightId ? ' just-added' : '';
       parts.push(
-        `<p class="para${hl}">${esc(textOf(a))}<span class="tag">[本人談]</span></p>`,
+        `<p class="para${hl}">${esc(text)}<span class="tag">[本人談]</span></p>`,
       );
     });
 
@@ -149,6 +152,8 @@ export function render(highlightId?: string): void {
 function renderTimeline(items: Answer[], highlightId?: string): string {
   const rows = items.map((a) => {
     let text = textOf(a);
+    if (!text) return null;
+
     const year = a.result?.year ?? null;
 
     // 年が文頭にあると重複するので、助詞ごと外す
@@ -157,7 +162,7 @@ function renderTimeline(items: Answer[], highlightId?: string): string {
     }
 
     return { a, year, text };
-  });
+  }).filter((r): r is NonNullable<typeof r> => r !== null);
 
   rows.sort((x, y) => {
     const nx = Number(x.year?.match(/\d+/)?.[0] ?? 9999);
