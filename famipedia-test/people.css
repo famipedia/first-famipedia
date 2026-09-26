@@ -96,7 +96,8 @@
 
 .new-person {
   display: flex;
-  gap: 8px;
+  /* 入力欄とボタンは上下に並ぶので、その間を少し広めに空ける */
+  gap: 14px 8px;
   flex-wrap: wrap;
 }
 
