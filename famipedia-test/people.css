@@ -86,9 +86,18 @@
   color: var(--wiki-muted);
 }
 
+/* 新規登録は一覧の上に置く。見出しは「記録一覧」と同じ .people-title */
+.new-person-section {
+  margin-bottom: 36px;
+}
+.new-person-section .people-title {
+  margin-bottom: 12px;
+}
+
 .new-person {
   display: flex;
-  gap: 8px;
+  /* 入力欄とボタンは上下に並ぶので、その間を少し広めに空ける */
+  gap: 14px 8px;
   flex-wrap: wrap;
 }
 

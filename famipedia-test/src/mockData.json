@@ -70,17 +70,17 @@
       "followUp": "その頃から始めた趣味はありますか？"
     },
     "q-now": {
-      "section": "message",
+      "section": "episode",
       "template": "近況として、{answer}と話している。",
       "followUp": null
     },
     "q-value": {
-      "section": "message",
+      "section": "episode",
       "template": "長く大切にしてきた考え方として、{answer}を挙げる。",
       "followUp": "その考えを誰かから教わったのですか？"
     },
     "q-msg": {
-      "section": "message",
+      "section": "episode",
       "template": "孫へのことばとして、{answer}と述べている。",
       "followUp": null
     }

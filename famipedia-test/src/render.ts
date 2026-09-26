@@ -9,13 +9,12 @@ import type { SectionId, Answer } from './types';
 import { store, findQuestion } from './store';
 import { updateDonateBanner } from './donateBanner';
 
-export const SECTIONS: SectionId[] = ['summary', 'timeline', 'episode', 'message'];
+export const SECTIONS: SectionId[] = ['summary', 'timeline', 'episode'];
 
 export const SECTION_LABEL: Record<SectionId, string> = {
   summary:  '概要',
-  timeline: '年表',
-  episode:  '思い出・エピソード',
-  message:  '伝えたいこと',
+  timeline: '来歴・生涯',
+  episode:  '人物・エピソード',
 };
 
 /** 要素を取ってくる短縮形 */
@@ -184,16 +183,67 @@ function renderTimeline(items: Answer[], highlightId?: string): string {
   rows.sort((x, y) => {
     const nx = Number(x.year?.match(/\d+/)?.[0] ?? 9999);
     const ny = Number(y.year?.match(/\d+/)?.[0] ?? 9999);
-    return nx - ny;
+    
+    // 両方とも年号があればそれで比較
+    if (nx !== 9999 && ny !== 9999) return nx - ny;
+    
+    // なければ期間の並び順で比較
+    const getOrder = (a: typeof x) => {
+      const p = a.a.result?.period || getPeriod(Number(a.year?.match(/\d+/)?.[0] ?? null));
+      if (p.includes('幼少') || p.includes('少年')) return 10;
+      if (p.includes('青年')) return 20;
+      if (p.includes('壮年')) return 40;
+      if (p.includes('高年') || p.includes('晩年')) return 60;
+      return nx !== 9999 ? nx : 999;
+    };
+    
+    return getOrder(x) - getOrder(y);
   });
 
-  const lis = rows.map(({ a, year, text }) => {
+  const birthYearMatch = store.info.birth?.match(/\d+/);
+  const birthYear = birthYearMatch ? Number(birthYearMatch[0]) : null;
+
+  function getPeriod(y: number | null): string {
+    if (y === null) return '時期不明';
+    if (birthYear === null) {
+      const decade = Math.floor(y / 10) * 10;
+      return `${decade}年代`;
+    }
+    const age = y - birthYear;
+    if (age <= 15) return '幼少・少年期';
+    if (age <= 29) return '青年期';
+    if (age <= 49) return '壮年期';
+    return '高年期';
+  }
+
+  let currentPeriod = '';
+  const htmlParts: string[] = [];
+
+  rows.forEach(({ a, year, text }) => {
+    const yNum = year ? Number(year.match(/\d+/)?.[0]) : null;
+    const period = a.result?.period || getPeriod(yNum);
+
+    if (period !== currentPeriod) {
+      if (currentPeriod !== '') {
+        htmlParts.push('</ul>');
+      }
+      htmlParts.push(`<h3>${period}</h3>`);
+      htmlParts.push('<ul class="timeline">');
+      currentPeriod = period;
+    }
+
     const hl = a.questionId === highlightId ? ' just-added' : '';
-    return `<li class="tl-item${hl}">`
+    htmlParts.push(
+      `<li class="tl-item${hl}">`
       + `<span class="tl-year">${esc(year ?? '—')}</span>`
       + `<span class="tl-text">${esc(text)}${editButton(a)}</span>`
-      + '</li>';
+      + '</li>'
+    );
   });
 
-  return `<ul class="timeline">${lis.join('')}</ul>`;
+  if (currentPeriod !== '') {
+    htmlParts.push('</ul>');
+  }
+
+  return htmlParts.join('');
 }
