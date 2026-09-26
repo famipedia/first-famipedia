@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>ファミペディアを支援 | ファミペディア</title>
+  <title>孫を支援 | ファミペディア</title>
   <link rel="stylesheet" href="./style.css" />
   <link rel="stylesheet" href="./donate.css" />
 </head>
@@ -23,17 +23,17 @@
 </header>
 
 <!-- ============================================================
-     Wikipediaの寄付ページのパロディ。
-     実際の決済は一切しません。「支援」は、次に会ったときに
-     家族へ手渡しする約束、という冗談の機能です。
+     Wikipediaの寄付ページのパロディ。おじいちゃんが孫に寄付する形。
+     実際の決済は一切しません。「支援」は、次に孫と会ったときに
+     おこづかいを手渡しする約束、という冗談の機能です。
      ============================================================ -->
 <main class="donate-page">
 
   <div class="assoc">
-    <span class="assoc-mark" aria-hidden="true">家</span>
+    <span class="assoc-mark" aria-hidden="true">孫</span>
     <span class="assoc-text">
-      <strong>ファミリー記録協会</strong>
-      <small>FAMILY RECORD ASSOCIATION</small>
+      <strong>まご財団</strong>
+      <small>MAGO FOUNDATION</small>
     </span>
   </div>
 
@@ -41,12 +41,12 @@
   <section id="view-select">
     <div class="donate-grid">
       <div>
-        <h1 class="donate-title">私たちが思い描いていた実家の記憶</h1>
+        <h1 class="donate-title">おじいちゃんが思い描いていた孫</h1>
         <div class="donate-lead">
-          <p>ファミペディアへのご支援をご検討いただき、ありがとうございます。</p>
-          <p>この1年間で、実家に何回帰りましたか。もし、そこで聞けた話に価値があったなら、話を聞き出してくれた「あの人」に感謝を伝える2%の家族の輪にぜひ加わってください。500円、2000円、5000円など、気持ちで大丈夫です。</p>
-          <p>私たちが残したかった記憶—誰にも取材されなければ消えてしまう、家族だけが知っている話—は、時間という絶え間ない脅威にさらされています。話を聞き出し、打ち込み、まとめてくれた人がいたから、この記録は残っています。</p>
-          <p>この1年で家族の歴史を知れたと感じるなら、ぜひご支援ください。小さすぎる感謝など存在しません。すべての質問、すべての記録に意味があります。</p>
+          <p>孫へのご支援をご検討いただき、ありがとうございます。</p>
+          <p>この1年間で、孫に何回会いましたか。もし、そのたびに昔の話を聞いてもらえたことがうれしかったなら、孫におこづかいを渡してくださる2%のおじいちゃんの輪に、ぜひ加わってください。500円、2000円、5000円など、ご無理のない範囲でお願いいたします。</p>
+          <p>おじいちゃんが思い描いていた孫—帰ってくるたびに昔話に耳をかたむけ、それを記録に残してくれる孫—は、学費、スマホ代、友達とのつきあいという絶え間ない脅威にさらされています。それでも孫は、質問を読み上げ、話を打ち込み、ページにまとめています。</p>
+          <p>この1年で、昔の話を聞いてもらえてよかったと感じるなら、ぜひご支援ください。小さすぎるおこづかいなど存在しません。すべての100円玉、すべてのお年玉に意味があります。</p>
           <p>どうぞよろしくお願いいたします。</p>
         </div>
       </div>
@@ -73,7 +73,7 @@
 
         <label class="fee">
           <input type="checkbox" id="fee" />
-          気持ちを100%届けるために、お茶菓子代として¥100を追加します。
+          気持ちを100%届けるために、帰りのジュース代として¥100を追加します。
         </label>
 
         <div id="pay-list">
@@ -122,7 +122,7 @@
 
         <div class="usage">
           <strong>ご支援の使いみちについて</strong><br />
-          取材メモ代・録音機材代・実家までの交通費に充てられます。ファミペディアは家族が家族のために作っている記録です。
+          孫の学用品・帰省の交通費・次に会うときのおみやげ代に充てられます。孫は、おじいちゃんの話をいちばんよく聞いている読者です。
         </div>
       </aside>
     </div>
@@ -131,13 +131,24 @@
   <!-- ---------- ② 確認（決済アプリを選んだ後） ---------- -->
   <section id="view-confirm" hidden>
     <div class="confirm">
-      <p class="confirm-label">金額を選ぶ</p>
-      <p class="confirm-amount" id="c-amount">¥2,500</p>
-      <p class="confirm-freq" id="c-freq">毎年の支援</p>
-      <hr />
-      <div id="c-btn-slot"></div>
+      <h2 class="confirm-title">まご財団に<br />ご寄付をお寄せください</h2>
+      <p class="confirm-lead">
+        ファミペディアは世界最小の百科事典です。そして、それはあなたのものです！<br />
+        孫があなたの昔話にアクセスできるのは、皆様からのおこづかいのおかげです。
+      </p>
+
+      <div class="confirm-box">
+        <p class="confirm-box-msg">
+          おじいちゃんのなかで孫におこづかいをくれるのは、わずか2%です。あなたからのおこづかいはとても貴重なのです。
+        </p>
+        <hr />
+        <p class="confirm-amount" id="c-amount">¥2,500</p>
+        <p class="confirm-freq" id="c-freq">毎年の支援</p>
+        <div id="c-btn-slot"></div>
+      </div>
+
       <p class="confirm-text">
-        私たちは、あなたの思い出を販売、譲渡することはありません。この度、ご支援くださることで、あなたは次に家族と会ったとき、上の金額を手渡しすることに同意したとみなされます。ファミリー記録協会とその家族は、実家を含む国内各地に所在し、おこづかいに関する決まりはご家庭によって異なる可能性があります。
+        私たちは、あなたの思い出を販売、譲渡することはありません。この度、ご支援くださることで、あなたは次に孫と会ったとき、上の金額を手渡しすることに同意したとみなされます。まご財団とその孫は、実家を離れた各地に所在し、おこづかいに関する決まりはご家庭によって異なる可能性があります。
       </p>
       <ul class="confirm-links">
         <li><button type="button" class="text-link" id="c-cancel">支援の際に何か問題がありましたか？</button></li>
@@ -150,10 +161,10 @@
   <!-- ---------- ③ 完了 ---------- -->
   <section id="view-done" hidden>
     <div class="notice">
-      <h2 class="notice-title is-ok">ご支援の約束を受け付けました</h2>
-      <p>この画面ではお金は動きません。次に会ったとき、直接手渡しでお願いします。</p>
-      <p class="handover">手渡しする金額 <strong id="d-amount">¥2,500</strong>（<span id="d-app">family pay</span>払い）</p>
-      <p>ご支援いただきありがとうございます！</p>
+      <h2 class="notice-title is-ok"><span class="nobr">ご支援の約束を</span><span class="nobr">受け付けました</span></h2>
+      <p>この画面ではお金は動きません。次に孫と会ったとき、直接手渡しでお願いします。</p>
+      <p class="handover">手渡しする金額 <strong id="d-amount">¥2,500</strong><span class="nobr">（<span id="d-app">family pay</span>払い）</span></p>
+      <p>孫がとても喜びます。ご支援いただきありがとうございます！</p>
       <p class="ref">受付番号: <span id="d-ref">FP-000000</span></p>
       <p class="notice-back"><a class="text-link" href="./people.html">記録一覧に戻る</a></p>
     </div>
@@ -162,7 +173,7 @@
   <!-- ---------- ④ キャンセル ---------- -->
   <section id="view-cancel" hidden>
     <div class="notice">
-      <h2 class="notice-title is-ng">ご支援は無事にキャンセルされました</h2>
+      <h2 class="notice-title is-ng"><span class="nobr">ご支援は無事に</span><span class="nobr">キャンセルされました</span></h2>
       <p>
         キャンセルするつもりではありませんでしたか？
         <button type="button" class="text-link" id="x-back">戻る</button>か、<a class="text-link" href="./people.html">家族で団らんする</a>こともできます。
@@ -172,7 +183,7 @@
     </div>
   </section>
 
-  <p class="donate-note">※ファミペディア内のジョーク機能です。実際の決済は発生しません。</p>
+  <p class="donate-note">※ファミペディア内のジョーク機能です。実際の決済は発生しません。おこづかいは、会ったときに直接どうぞ。</p>
 </main>
 
 <script type="module" src="./src/donate.ts"></script>
