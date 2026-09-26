@@ -64,7 +64,7 @@ function leadParagraph(): string {
 
 export function sectionOf(a: Answer): SectionId {
   if (a.result) return a.result.section;
-  return findQuestion(a.questionId)?.section ?? 'episode';
+  return findQuestion(a.questionId)?.section ?? 'timeline';
 }
 
 /** 記事に載せる文章 */
