@@ -238,36 +238,62 @@
 }
 .usage strong { color: var(--wiki-text); }
 
-/* ---------- ② 確認画面 ---------- */
+/* ---------- ② 確認画面（Wikimediaの寄付ページの文章をなぞったパロディ） ---------- */
 
 .confirm { max-width: 460px; margin: 8px auto 0; }
 
-.confirm-label { text-align: center; font-size: 15px; font-weight: 700; }
+.confirm-title {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+
+.confirm-lead {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+/* 金額と決済ボタンを囲む箱。本家の青い箱の代わりに、アプリの緑を使う */
+.confirm-box {
+  padding: 20px 18px 10px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.confirm-box-msg {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.confirm-box hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  margin: 16px 0 12px;
+}
 
 .confirm-amount {
-  margin: 4px 0 2px;
   text-align: center;
   font-size: 44px;
   font-weight: 800;
   line-height: 1.3;
-  color: var(--accent);
   font-variant-numeric: tabular-nums;
 }
 
 .confirm-freq {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   text-align: center;
   font-size: 12.5px;
-  color: var(--wiki-muted);
-}
-
-.confirm hr {
-  border: none;
-  border-top: 1px solid var(--wiki-line-l);
-  margin-bottom: 18px;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .confirm .pay-btn { font-size: 15px; }
+
+/* 緑の箱の中では、緑のどりぺいボタンが埋もれないよう白い縁を付ける */
+.confirm-box .pay-dori { border-color: #fff; }
 
 .confirm-text {
   margin: 22px 0 18px;
@@ -340,6 +366,9 @@
 
 .notice .notice-back { margin: 16px 0 0; }
 
+/* 見出しなどを、意味の切れ目でだけ折り返す */
+.nobr { display: inline-block; }
+
 .donate-note {
   margin-top: 36px;
   padding: 12px 16px;
@@ -355,6 +384,7 @@
    ========================================================== */
 
 @media (min-width: 900px) {
+  .confirm-title { font-size: 32px; }
   .donate-grid { grid-template-columns: minmax(0, 1fr) 340px; }
   .donate-title { font-size: 30px; }
   .donate-card { position: sticky; top: calc(var(--bar-h) + 20px); }
