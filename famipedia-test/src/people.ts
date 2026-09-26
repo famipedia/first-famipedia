@@ -7,7 +7,7 @@
 
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
-import { listPeople, createPerson } from './db';
+import { listPeople, createPerson, deletePerson } from './db';
 import type { PersonSummary } from './types';
 
 const $ = <T extends HTMLElement>(sel: string): T =>
@@ -44,7 +44,12 @@ async function loadList(uid: string): Promise<void> {
   }
 }
 
+/** 今表示している一覧。メニューや削除で名前などを引くのに使う */
+let currentPeople: PersonSummary[] = [];
+
 function renderList(people: PersonSummary[]): void {
+  currentPeople = people;
+
   if (people.length === 0) {
     elList.innerHTML =
       '<p class="empty">まだ記録がありません。さっそく下から作ってみましょう！</p>';
@@ -56,13 +61,18 @@ function renderList(people: PersonSummary[]): void {
       ? ` style="background-image:url(${p.photo})"`
       : '';
     return `
-      <a class="person-card" href="./index.html?person=${encodeURIComponent(p.id)}">
-        <span class="person-card__photo"${photoStyle}>${p.photo ? '' : '？'}</span>
-        <span class="person-card__body">
-          <span class="person-card__name">${escapeHtml(p.name)}</span>
-          <span class="person-card__meta">記録 ${p.answerCount} 件 ／ 最終更新 ${escapeHtml(p.updatedAt.slice(0, 10))}</span>
-        </span>
-      </a>
+      <div class="person-item">
+        <a class="person-card" href="./index.html?person=${encodeURIComponent(p.id)}">
+          <span class="person-card__photo"${photoStyle}>${p.photo ? '' : '？'}</span>
+          <span class="person-card__body">
+            <span class="person-card__name">${escapeHtml(p.name)}</span>
+            <span class="person-card__meta">記録 ${p.answerCount} 件 ／ 最終更新 ${escapeHtml(p.updatedAt.slice(0, 10))}</span>
+          </span>
+        </a>
+        <button type="button" class="person-menu-btn" data-person-id="${escapeHtml(p.id)}"
+          aria-haspopup="menu" aria-expanded="false"
+          aria-label="${escapeHtml(p.name)}の操作">⋯</button>
+      </div>
     `;
   }).join('');
 }
@@ -72,6 +82,137 @@ function escapeHtml(s: string): string {
   d.textContent = s;
   return d.innerHTML;
 }
+
+
+/* ----------------------------------------------------------
+   ⋯ メニュー（共有 / 削除）
+   メニューは1つだけ用意し、押された ⋯ の下に動かして使い回す
+   ---------------------------------------------------------- */
+
+const elMenu = $<HTMLDivElement>('#person-menu');
+
+/** メニューを開いている記録のid */
+let menuPersonId: string | null = null;
+let menuButton: HTMLButtonElement | null = null;
+
+function openMenu(btn: HTMLButtonElement): void {
+  closeMenu();
+  menuPersonId = btn.dataset.personId ?? null;
+  menuButton = btn;
+  btn.setAttribute('aria-expanded', 'true');
+
+  // ボタンの右下にそろえて出す（画面の右端からはみ出さないように）
+  const r = btn.getBoundingClientRect();
+  elMenu.hidden = false;
+  elMenu.style.top = `${r.bottom + window.scrollY + 4}px`;
+  elMenu.style.left =
+    `${Math.max(8, r.right + window.scrollX - elMenu.offsetWidth)}px`;
+  elMenu.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus();
+}
+
+function closeMenu(): void {
+  elMenu.hidden = true;
+  menuButton?.setAttribute('aria-expanded', 'false');
+  menuButton = null;
+}
+
+// 一覧は描き直すたびに中身が入れ替わるので、外側でまとめてクリックを拾う
+elList.addEventListener('click', (e) => {
+  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.person-menu-btn');
+  if (!btn) return;
+  if (menuButton === btn) {
+    closeMenu();
+  } else {
+    openMenu(btn);
+  }
+});
+
+// メニューの外を押したら閉じる
+document.addEventListener('click', (e) => {
+  if (elMenu.hidden) return;
+  const t = e.target as HTMLElement;
+  if (!elMenu.contains(t) && !t.closest('.person-menu-btn')) closeMenu();
+});
+
+// 共有：記事ページを開き、そこでスクショを撮る
+$('#menu-share').addEventListener('click', () => {
+  if (!menuPersonId) return;
+  location.href = `./index.html?person=${encodeURIComponent(menuPersonId)}&shot=1`;
+});
+
+$('#menu-delete').addEventListener('click', () => {
+  const id = menuPersonId;
+  closeMenu();
+  if (id) openDeleteModal(id);
+});
+
+
+/* ----------------------------------------------------------
+   削除の確認ダイアログ
+   ---------------------------------------------------------- */
+
+const elDeleteModal = $<HTMLDivElement>('#delete-modal');
+const elDeleteText  = $<HTMLParagraphElement>('#delete-text');
+const elDeleteOk    = $<HTMLButtonElement>('#delete-ok');
+
+/** 削除しようとしている記録のid */
+let deletingId: string | null = null;
+
+function openDeleteModal(id: string): void {
+  const p = currentPeople.find((x) => x.id === id);
+  if (!p) return;
+
+  deletingId = id;
+  elDeleteText.textContent =
+    `「${p.name}」の記録（${p.answerCount} 件）を削除します。`
+    + '削除した記録は元に戻せません。本当に削除しますか？';
+  elDeleteOk.disabled = false;
+  elDeleteOk.textContent = '削除する';
+  elDeleteModal.hidden = false;
+  $<HTMLButtonElement>('#delete-cancel').focus();
+}
+
+function closeDeleteModal(): void {
+  elDeleteModal.hidden = true;
+  deletingId = null;
+}
+
+$('#delete-cancel').addEventListener('click', closeDeleteModal);
+
+elDeleteModal.addEventListener('click', (e) => {
+  if (e.target === elDeleteModal) closeDeleteModal();
+});
+
+elDeleteOk.addEventListener('click', () => {
+  const id = deletingId;
+  if (!id) return;
+
+  elDeleteOk.disabled = true;
+  elDeleteOk.textContent = '削除しています…';
+
+  void deletePerson(id)
+    .then(() => {
+      closeDeleteModal();
+      renderList(currentPeople.filter((p) => p.id !== id));
+    })
+    .catch((err) => {
+      console.error(err);
+      const code = (err as { code?: string }).code ?? String(err);
+      alert(`削除に失敗しました。（${code}）`);
+      elDeleteOk.disabled = false;
+      elDeleteOk.textContent = '削除する';
+    });
+});
+
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+  if (e.key !== 'Escape') return;
+  if (!elDeleteModal.hidden) closeDeleteModal();
+  if (!elMenu.hidden) {
+    const btn = menuButton;
+    closeMenu();
+    btn?.focus();
+  }
+});
 
 
 /* ----------------------------------------------------------

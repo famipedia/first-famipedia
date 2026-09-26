@@ -42,6 +42,25 @@
   </form>
 </main>
 
+<!-- 各記録の ⋯ から開くメニュー。people.ts が押された ⋯ の下に動かす -->
+<div class="person-menu" id="person-menu" role="menu" hidden>
+  <button type="button" class="person-menu__item" id="menu-share" role="menuitem">共有（スクショ）</button>
+  <button type="button" class="person-menu__item person-menu__item--danger" id="menu-delete" role="menuitem">削除</button>
+</div>
+
+<!-- 削除の確認ダイアログ -->
+<div class="modal" id="delete-modal" hidden>
+  <div class="modal-box wiki-dialog" role="alertdialog" aria-modal="true"
+    aria-labelledby="delete-title" aria-describedby="delete-text">
+    <p class="wiki-dialog__title" id="delete-title">記録の削除</p>
+    <p class="wiki-dialog__text" id="delete-text"></p>
+    <div class="wiki-dialog__actions">
+      <button type="button" class="wiki-btn" id="delete-cancel">キャンセル</button>
+      <button type="button" class="wiki-btn wiki-btn--destructive" id="delete-ok">削除する</button>
+    </div>
+  </div>
+</div>
+
 <script type="module" src="./src/people.ts"></script>
 </body>
 </html>
