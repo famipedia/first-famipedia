@@ -7,6 +7,7 @@ export default defineConfig({
         main: "index.html",
         login: "login.html",
         people: "people.html",
+        donate: "donate.html",
       },
     },
   },
