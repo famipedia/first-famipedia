@@ -28,6 +28,7 @@
   </div>
   <div class="topbar-actions">
     <a href="./people.html" class="link-btn">記録一覧</a>
+    <button id="btn-article-edit" class="link-btn">編集する</button>
     <a href="./donate.html" class="link-btn">寄付する</a>
     <button id="btn-clear"  class="link-btn">最初から</button>
     <button id="btn-logout" class="link-btn">ログアウト</button>
@@ -253,6 +254,25 @@
     <div class="modal-actions">
       <button type="button" class="btn" id="edit-cancel">やめる</button>
       <button type="button" class="btn btn-primary" id="edit-save">保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     記事全体の編集モーダル
+     上部メニューの「編集する」から開き、本文をまとめて直す。
+     中身の入力欄は main.ts が記録に合わせて作ります
+     ============================================================ -->
+<div class="modal" id="article-edit-modal" hidden>
+  <div class="modal-box modal-box-article" role="dialog" aria-modal="true" aria-labelledby="article-edit-title">
+    <p class="modal-title" id="article-edit-title">記事を編集</p>
+    <p class="modal-text">
+      記事の文章を直せます。名前や生年月日などは、基本情報の ✎ から直してください。
+    </p>
+    <div class="article-edit-list" id="article-edit-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="article-edit-cancel">やめる</button>
+      <button type="button" class="btn btn-primary" id="article-edit-save">保存する</button>
     </div>
   </div>
 </div>
