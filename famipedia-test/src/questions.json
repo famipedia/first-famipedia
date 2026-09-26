@@ -81,17 +81,17 @@
     },
     {
       "id": "q-now",
-      "section": "message",
+      "section": "episode",
       "text": "今、楽しみにしていることは何ですか？"
     },
     {
       "id": "q-value",
-      "section": "message",
+      "section": "episode",
       "text": "長く大切にしてきた考え方はありますか？"
     },
     {
       "id": "q-msg",
-      "section": "message",
+      "section": "episode",
       "text": "孫に伝えておきたいことはありますか？"
     }
   ]
