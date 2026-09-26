@@ -247,7 +247,7 @@ a { color: var(--wiki-link); }
   width: 100%;
   font-family: var(--font-sans);
   /* 16px未満だとiPhoneで勝手に拡大されるので16px以上を維持
-     （style.cssの.ask-inputや.export-textと同じ理由です） */
+     （style.cssの.ask-inputや.edit-textと同じ理由です） */
   font-size: 16px;
   padding: 10px 12px;
   color: var(--wiki-text);

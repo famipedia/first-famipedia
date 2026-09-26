@@ -13,7 +13,7 @@ import {
   BASE_QUESTIONS,
 } from './store';
 import { generateFollowUp, generateArticleSummary } from './api';
-import { render, SECTION_LABEL } from './render';
+import { render, sectionOf, textOf } from './render';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 
@@ -418,10 +418,90 @@ elSettingsModal.addEventListener('click', (e) => {
   if (e.target === elSettingsModal) elSettingsModal.hidden = true;
 });
 
+
+/* ----------------------------------------------------------
+   文章の編集モーダル
+   記事の段落・年表に付いた［編集］から開き、
+   AIが整えた文章（result.text）を手で直せるようにする。
+   打ち込んだままの回答（raw）は残しておく
+   ---------------------------------------------------------- */
+const elEditModal  = $<HTMLDivElement>('#edit-modal');
+const elEditQ      = $<HTMLParagraphElement>('#edit-question');
+const elEditYearF  = $<HTMLLabelElement>('#edit-year-field');
+const inEditYear   = $<HTMLInputElement>('#edit-year');
+const inEditText   = $<HTMLTextAreaElement>('#edit-text');
+const elEditRaw    = $<HTMLParagraphElement>('#edit-raw');
+
+/** 今編集している回答（store.answers の番号） */
+let editingIndex: number | null = null;
+
+function openEditModal(index: number): void {
+  const a = store.answers[index];
+  if (!a) return;
+
+  editingIndex = index;
+  elEditQ.textContent = `質問：${a.question}`;
+  inEditText.value = textOf(a);
+  elEditRaw.textContent = a.raw;
+
+  // 年表の項目なら、年も直せるようにする
+  const isTimeline = sectionOf(a) === 'timeline';
+  elEditYearF.hidden = !isTimeline;
+  inEditYear.value = a.result?.year ?? '';
+
+  elEditModal.hidden = false;
+  inEditText.focus();
+}
+
+function closeEditModal(): void {
+  elEditModal.hidden = true;
+  editingIndex = null;
+}
+
+// 記事は描き直すたびに中身が入れ替わるので、外側でまとめてクリックを拾う
+$('#pane-doc').addEventListener('click', (e) => {
+  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.para-edit');
+  if (!btn) return;
+  openEditModal(Number(btn.dataset.answerIndex));
+});
+
+$('#edit-cancel').addEventListener('click', closeEditModal);
+
+elEditModal.addEventListener('click', (e) => {
+  if (e.target === elEditModal) closeEditModal();
+});
+
+$('#edit-save').addEventListener('click', () => {
+  if (editingIndex === null) return;
+  const a = store.answers[editingIndex];
+  if (!a) return;
+
+  const text = inEditText.value.trim();
+  if (text === '') {
+    inEditText.focus();
+    toast('文章を入力してください');
+    return;
+  }
+
+  if (!a.result) {
+    // AIを通っていない回答は、今の見た目のまま result を作って直す
+    a.result = { section: sectionOf(a), year: null, text, followUp: null };
+  } else {
+    a.result.text = text;
+  }
+  if (!elEditYearF.hidden) a.result.year = inEditYear.value.trim() || null;
+
+  save();
+  render(a.questionId);
+  closeEditModal();
+  toast('文章を保存しました');
+});
+
 document.addEventListener('keydown', (e: KeyboardEvent) => {
   if (e.key === 'Escape') {
     if (!elModal.hidden) closeModal();
     if (!elSettingsModal.hidden) elSettingsModal.hidden = true;
+    if (!elEditModal.hidden) closeEditModal();
   }
 });
 
