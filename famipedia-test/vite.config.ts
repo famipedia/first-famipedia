@@ -8,6 +8,7 @@ export default defineConfig({
         login: "login.html",
         people: "people.html",
         donate: "donate.html",
+        memory: "memory.html",
       },
     },
   },

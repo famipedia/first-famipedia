@@ -17,6 +17,9 @@ import { render, sectionOf, textOf, SECTIONS, SECTION_LABEL } from './render';
 import { captureArticle, saveImage, imageFileName } from './longshot';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
+import { listPeople } from './db';
+import { setLinkTargets } from './links';
+import { resizeImage } from './image';
 
 const $ = <T extends HTMLElement>(sel: string): T =>
   document.querySelector<T>(sel)!;
@@ -297,35 +300,6 @@ elPhotoIn.addEventListener('change', () => {
       toast('写真の読み込みに失敗しました');
     });
 });
-
-/** 画像を指定した幅までリサイズ・圧縮してBase64(dataURL)にする */
-function resizeImage(file: File, maxWidth: number, quality: number): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(reader.error ?? new Error('読み込みに失敗しました'));
-    reader.onload = () => {
-      const img = new Image();
-      img.onerror = () => reject(new Error('画像を読み込めませんでした'));
-      img.onload = () => {
-        const scale = Math.min(1, maxWidth / img.width);
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-          reject(new Error('canvasを初期化できませんでした'));
-          return;
-        }
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.src = String(reader.result);
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 
 
 /* ----------------------------------------------------------
@@ -709,8 +683,17 @@ if (!personId) {
 }
 
 async function boot(id: string): Promise<void> {
+  // 本文の言葉を思い出ページへリンクするため、登録済みの思い出を読んでおく。
+  // 失敗しても記事は開けるように、これまでどおり Wikipedia リンクだけで表示する
+  const uid = auth.currentUser?.uid;
+  const linkTargets = uid
+    ? listPeople(uid).then(setLinkTargets).catch((err) => {
+        console.warn('思い出の一覧を読み込めませんでした', err);
+      })
+    : Promise.resolve();
+
   try {
-    await initStore(id);
+    await Promise.all([initStore(id), linkTargets]);
   } catch (err) {
     console.error(err);
     alert('この記録を開けませんでした。一覧画面に戻ります。');

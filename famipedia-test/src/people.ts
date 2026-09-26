@@ -7,8 +7,9 @@
 
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
-import { listPeople, createPerson, deletePerson } from './db';
-import type { PersonSummary } from './types';
+import { listPeople, createPerson, createMemory, deletePerson } from './db';
+import { memoryUrl } from './links';
+import type { PersonSummary, RecordType } from './types';
 
 const $ = <T extends HTMLElement>(sel: string): T =>
   document.querySelector<T>(sel)!;
@@ -56,25 +57,45 @@ function renderList(people: PersonSummary[]): void {
     return;
   }
 
-  elList.innerHTML = people.map((p) => {
-    const photoStyle = p.photo
-      ? ` style="background-image:url(${p.photo})"`
-      : '';
-    return `
-      <div class="person-item">
-        <a class="person-card" href="./index.html?person=${encodeURIComponent(p.id)}">
-          <span class="person-card__photo"${photoStyle}>${p.photo ? '' : '？'}</span>
-          <span class="person-card__body">
-            <span class="person-card__name">${escapeHtml(p.name)}</span>
-            <span class="person-card__meta">記録 ${p.answerCount} 件 ／ 最終更新 ${escapeHtml(p.updatedAt.slice(0, 10))}</span>
-          </span>
-        </a>
-        <button type="button" class="person-menu-btn" data-person-id="${escapeHtml(p.id)}"
-          aria-haspopup="menu" aria-expanded="false"
-          aria-label="${escapeHtml(p.name)}の操作">⋯</button>
-      </div>
-    `;
-  }).join('');
+  // 人物と思い出を分けて並べる。片方しか無ければ小見出しは出さない
+  const persons  = people.filter((p) => p.type === 'person');
+  const memories = people.filter((p) => p.type === 'memory');
+  const grouped = persons.length > 0 && memories.length > 0;
+
+  elList.innerHTML = [
+    grouped && '<h2 class="people-group-title">人物</h2>',
+    ...persons.map(card),
+    grouped && '<h2 class="people-group-title">思い出</h2>',
+    ...memories.map(card),
+  ].filter(Boolean).join('');
+}
+
+/** 記録1件ぶんのカード */
+function card(p: PersonSummary): string {
+  const photoStyle = p.photo
+    ? ` style="background-image:url(${p.photo})"`
+    : '';
+  const href = p.type === 'memory'
+    ? memoryUrl(p.id)
+    : `./index.html?person=${encodeURIComponent(p.id)}`;
+  const meta = p.type === 'memory'
+    ? `思い出 ／ 最終更新 ${escapeHtml(p.updatedAt.slice(0, 10))}`
+    : `記録 ${p.answerCount} 件 ／ 最終更新 ${escapeHtml(p.updatedAt.slice(0, 10))}`;
+
+  return `
+    <div class="person-item">
+      <a class="person-card" href="${href}">
+        <span class="person-card__photo"${photoStyle}>${p.photo ? '' : '？'}</span>
+        <span class="person-card__body">
+          <span class="person-card__name">${escapeHtml(p.name)}</span>
+          <span class="person-card__meta">${meta}</span>
+        </span>
+      </a>
+      <button type="button" class="person-menu-btn" data-person-id="${escapeHtml(p.id)}"
+        aria-haspopup="menu" aria-expanded="false"
+        aria-label="${escapeHtml(p.name)}の操作">⋯</button>
+    </div>
+  `;
 }
 
 function escapeHtml(s: string): string {
@@ -100,6 +121,10 @@ function openMenu(btn: HTMLButtonElement): void {
   menuPersonId = btn.dataset.personId ?? null;
   menuButton = btn;
   btn.setAttribute('aria-expanded', 'true');
+
+  // 共有（スクショ）は人物の記事ページの機能なので、思い出では出さない
+  const target = currentPeople.find((p) => p.id === menuPersonId);
+  $('#menu-share').hidden = target?.type === 'memory';
 
   // ボタンの右下にそろえて出す（画面の右端からはみ出さないように）
   const r = btn.getBoundingClientRect();
@@ -219,6 +244,28 @@ document.addEventListener('keydown', (e: KeyboardEvent) => {
    新しく記録を作る
    ---------------------------------------------------------- */
 
+/** 新規登録で選ばれている種類（人物 / 思い出） */
+function selectedType(): RecordType {
+  const checked = elForm.querySelector<HTMLInputElement>('input[name="record-type"]:checked');
+  return checked?.value === 'memory' ? 'memory' : 'person';
+}
+
+// 種類に合わせて、入力欄の例とボタンの文言を変える
+elForm.querySelectorAll<HTMLInputElement>('input[name="record-type"]').forEach((r) => {
+  r.addEventListener('change', () => {
+    const memory = selectedType() === 'memory';
+    elNameInput.placeholder = memory
+      ? '例：市民会館（あとで変えられます）'
+      : '例：田中 一郎（あとで変えられます）';
+    $('#new-person-label').textContent = memory
+      ? '新しく記録する思い出のタイトル'
+      : '新しく記録する人の名前';
+    $('#new-person-submit').textContent = memory
+      ? '＋ 新しく思い出を記録する'
+      : '＋ 新しく記録する';
+  });
+});
+
 elForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
@@ -229,9 +276,14 @@ elForm.addEventListener('submit', (e) => {
   const submitBtn = elForm.querySelector<HTMLButtonElement>('button[type="submit"]')!;
   submitBtn.disabled = true;
 
-  void createPerson(user.uid, name)
-    .then((id) => {
-      location.href = `./index.html?person=${encodeURIComponent(id)}&new=1`;
+  const created = selectedType() === 'memory'
+    ? createMemory(user.uid, name).then((id) => `${memoryUrl(id)}&new=1`)
+    : createPerson(user.uid, name).then(
+        (id) => `./index.html?person=${encodeURIComponent(id)}&new=1`);
+
+  void created
+    .then((url) => {
+      location.href = url;
     })
     .catch((err) => {
       console.error(err);

@@ -7,6 +7,7 @@
 
 import type { SectionId, Answer } from './types';
 import { store, findQuestion } from './store';
+import { linkify } from './links';
 
 export const SECTIONS: SectionId[] = ['summary', 'timeline', 'episode'];
 
@@ -20,17 +21,10 @@ export const SECTION_LABEL: Record<SectionId, string> = {
 const $ = <T extends HTMLElement>(sel: string): T =>
   document.querySelector<T>(sel)!;
 
-/** 入力文字をそのままHTMLに入れると危ないので無害化し、Wikipedia風のリンクを作る */
-function esc(s: string): string {
-  const d = document.createElement('div');
-  d.textContent = s;
-  
-  // [[キーワード]] を <a href="https://ja.wikipedia.org/wiki/キーワード" class="wiki-link">キーワード</a> に変換
-  let html = d.innerHTML;
-  html = html.replace(/\[\[(.*?)\]\]/g, '<a href="https://ja.wikipedia.org/wiki/$1" target="_blank" class="wiki-link" rel="noopener noreferrer">$1</a>');
-  
-  return html;
-}
+/** 入力文字を無害化し、リンクを付ける。
+ *  思い出に登録した言葉は Famipedia 内へ、それ以外の [[キーワード]] は
+ *  Wikipedia へのリンクになる（詳しくは links.ts） */
+const esc = (s: string): string => linkify(s);
 
 /** 文末に「。」が無ければ付ける */
 function period(t: string): string {
