@@ -401,6 +401,22 @@ a { color: var(--wiki-link); }
 
 .tl-text { flex: 1; min-width: 0; }
 
+/* 段落・年表の後ろに付く［編集］。Wikipediaの節編集リンクに寄せる */
+.para-edit {
+  margin-left: 6px;
+  padding: 2px 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--wiki-link);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.para-edit::before { content: '['; color: var(--wiki-muted); }
+.para-edit::after  { content: ']'; color: var(--wiki-muted); }
+.para-edit:hover   { text-decoration: underline; }
+
 /* ---------- 基礎情報ボックス ---------- */
 /* スマホでは横幅いっぱい、PCでは記事の右に回り込ませる */
 
@@ -579,10 +595,18 @@ a { color: var(--wiki-link); }
 
 .modal-box-wide { max-width: 420px; }
 
-/* 書き出した文章を出す欄 */
-.export-text {
+/* 文章の編集欄 */
+.edit-field { display: block; margin-bottom: 14px; }
+.edit-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wiki-muted);
+  margin-bottom: 6px;
+}
+.edit-text {
+  display: block;
   width: 100%;
-  margin-bottom: 16px;
   padding: 12px;
   font-family: inherit;
   /* 16px未満だとiPhoneで勝手に拡大されるので下げない */
@@ -593,6 +617,28 @@ a { color: var(--wiki-link); }
   border: 1px solid var(--wiki-line-l);
   border-radius: 8px;
   resize: vertical;
+}
+.edit-text:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(42, 109, 60, 0.15);
+}
+.edit-year { max-width: 160px; }
+
+/* AIが整える前の、打ち込んだままの回答 */
+.edit-raw {
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: var(--wiki-muted);
+}
+.edit-raw summary { cursor: pointer; }
+.edit-raw p {
+  margin-top: 6px;
+  padding: 8px 10px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  background: var(--wiki-bg);
+  border-radius: 6px;
 }
 
 .modal-actions {

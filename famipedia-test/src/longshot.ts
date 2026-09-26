@@ -10,7 +10,13 @@
 const MAX_PIXELS = 16_000_000;
 
 /** 画像に写さない部品（ボタンやリンク、写真が入っていない「写真を追加」の枠） */
-const NOT_IN_IMAGE = '.doc-shot, .doc-foot-donate, .infobox-edit, .infobox-photo:not(.has-image)';
+const NOT_IN_IMAGE = [
+  '.doc-shot',                       // スクショボタン
+  '.doc-foot-donate',                // 「支援する」リンク
+  '.infobox-edit',                   // 基礎情報の ✎ ボタン
+  '.para-edit',                      // 文章ごとの［編集］ボタン
+  '.infobox-photo:not(.has-image)',  // 写真が入っていない「写真を追加」の枠
+].join(', ');
 
 /** 記事を縦長の画像（PNG）にする */
 export async function captureArticle(article: HTMLElement): Promise<Blob> {
