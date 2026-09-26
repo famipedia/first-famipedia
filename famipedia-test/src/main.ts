@@ -13,7 +13,7 @@ import {
   BASE_QUESTIONS,
 } from './store';
 import { generateFollowUp, generateArticleSummary } from './api';
-import { render, sectionOf, textOf } from './render';
+import { render, sectionOf, textOf, SECTIONS, SECTION_LABEL } from './render';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 
@@ -497,11 +497,131 @@ $('#edit-save').addEventListener('click', () => {
   toast('文章を保存しました');
 });
 
+
+/* ----------------------------------------------------------
+   記事全体の編集モーダル
+   上部メニューの「編集する」から開き、本文の全項目を
+   セクションごとに並べて、まとめて直せるようにする
+   ---------------------------------------------------------- */
+const elArticleModal = $<HTMLDivElement>('#article-edit-modal');
+const elArticleList  = $<HTMLDivElement>('#article-edit-list');
+
+/** 入力欄と、それがどの回答のものかの対応 */
+let articleFields: {
+  index: number;
+  text: HTMLTextAreaElement;
+  year: HTMLInputElement | null;
+}[] = [];
+
+
+function openArticleModal(): void {
+  elArticleList.replaceChildren();
+  articleFields = [];
+
+  SECTIONS.forEach((sec) => {
+    // 記事に実際に出ているものだけ（まとめで隠れた回答や基礎情報用は除く）
+    const items = store.answers
+      .map((a, index) => ({ a, index }))
+      .filter(({ a }) =>
+        sectionOf(a) === sec
+        && textOf(a) !== ''
+        && findQuestion(a.questionId)?.infoOnly !== true);
+    if (items.length === 0) return;
+
+    const h = document.createElement('h3');
+    h.className = 'article-edit-section';
+    h.textContent = SECTION_LABEL[sec];
+    elArticleList.append(h);
+
+    items.forEach(({ a, index }) => {
+      const item = document.createElement('div');
+      item.className = 'article-edit-item';
+
+      const q = document.createElement('p');
+      q.className = 'article-edit-question';
+      q.textContent = `質問：${a.question}`;
+      item.append(q);
+
+      let year: HTMLInputElement | null = null;
+      if (sec === 'timeline') {
+        year = document.createElement('input');
+        year.type = 'text';
+        year.className = 'edit-text edit-year';
+        year.placeholder = '年（例: 1966年）';
+        year.value = a.result?.year ?? '';
+        year.setAttribute('aria-label', '年');
+        item.append(year);
+      }
+
+      const text = document.createElement('textarea');
+      text.className = 'edit-text';
+      text.rows = 4;
+      text.value = textOf(a);
+      text.setAttribute('aria-label', `「${a.question}」の文章`);
+      item.append(text);
+
+      elArticleList.append(item);
+      articleFields.push({ index, text, year });
+    });
+  });
+
+  if (articleFields.length === 0) {
+    const p = document.createElement('p');
+    p.className = 'article-edit-empty';
+    p.textContent = 'まだ記事の文章がありません。質問に答えると、ここで直せるようになります。';
+    elArticleList.append(p);
+  }
+
+  $<HTMLButtonElement>('#article-edit-save').hidden = articleFields.length === 0;
+  elArticleModal.hidden = false;
+  elArticleList.scrollTop = 0;
+}
+
+function closeArticleModal(): void {
+  elArticleModal.hidden = true;
+  articleFields = [];
+}
+
+$('#btn-article-edit').addEventListener('click', openArticleModal);
+$('#article-edit-cancel').addEventListener('click', closeArticleModal);
+
+elArticleModal.addEventListener('click', (e) => {
+  if (e.target === elArticleModal) closeArticleModal();
+});
+
+$('#article-edit-save').addEventListener('click', () => {
+  // 空の欄があれば、保存せずにそこへ移動する
+  const empty = articleFields.find((f) => f.text.value.trim() === '');
+  if (empty) {
+    empty.text.focus();
+    toast('空の文章があります');
+    return;
+  }
+
+  articleFields.forEach(({ index, text, year }) => {
+    const a = store.answers[index];
+    if (!a) return;
+    const t = text.value.trim();
+    if (!a.result) {
+      a.result = { section: sectionOf(a), year: null, text: t, followUp: null };
+    } else {
+      a.result.text = t;
+    }
+    if (year) a.result.year = year.value.trim() || null;
+  });
+
+  save();
+  render();
+  closeArticleModal();
+  toast('記事を保存しました');
+});
+
 document.addEventListener('keydown', (e: KeyboardEvent) => {
   if (e.key === 'Escape') {
     if (!elModal.hidden) closeModal();
     if (!elSettingsModal.hidden) elSettingsModal.hidden = true;
     if (!elEditModal.hidden) closeEditModal();
+    if (!elArticleModal.hidden) closeArticleModal();
   }
 });
 

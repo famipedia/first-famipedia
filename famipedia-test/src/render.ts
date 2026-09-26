@@ -8,7 +8,7 @@
 import type { SectionId, Answer } from './types';
 import { store, findQuestion } from './store';
 
-const SECTIONS: SectionId[] = ['summary', 'timeline', 'episode', 'message'];
+export const SECTIONS: SectionId[] = ['summary', 'timeline', 'episode', 'message'];
 
 export const SECTION_LABEL: Record<SectionId, string> = {
   summary:  '概要',

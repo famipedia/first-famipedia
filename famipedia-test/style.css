@@ -611,6 +611,45 @@ a { color: var(--wiki-link); }
 }
 .edit-year { max-width: 160px; }
 
+/* 記事全体の編集モーダル。項目が多くなるので中身だけスクロールさせる */
+.modal-box-article {
+  max-width: 640px;
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  display: flex;
+  flex-direction: column;
+}
+.article-edit-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0 -20px 16px;
+  padding: 0 20px;
+  border-top: 1px solid var(--wiki-line-l);
+  border-bottom: 1px solid var(--wiki-line-l);
+}
+.article-edit-section {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  margin: 18px 0 10px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--wiki-line);
+}
+.article-edit-item { margin-bottom: 16px; }
+.article-edit-item .edit-year { margin-bottom: 6px; }
+.article-edit-question {
+  font-size: 12px;
+  color: var(--wiki-muted);
+  margin-bottom: 6px;
+}
+.article-edit-empty {
+  padding: 24px 0;
+  font-size: 13px;
+  color: var(--wiki-muted);
+  text-align: center;
+}
+
 /* AIが整える前の、打ち込んだままの回答 */
 .edit-raw {
   margin-bottom: 18px;
