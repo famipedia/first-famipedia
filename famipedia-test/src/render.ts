@@ -210,8 +210,6 @@ function renderTimeline(items: Answer[], highlightId?: string): string {
     return { a, year, text };
   }).filter((r): r is NonNullable<typeof r> => r !== null);
 
-  const birthYear = getBirthYear();
-
   rows.sort((x, y) => {
     const nx = Number(x.year?.match(/\d+/)?.[0] ?? 9999);
     const ny = Number(y.year?.match(/\d+/)?.[0] ?? 9999);
