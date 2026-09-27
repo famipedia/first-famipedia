@@ -74,9 +74,10 @@ function bracketLink(word: string, selfId?: string): string {
   if (id) {
     return id === selfId ? esc(word) : internalLink(word, id);
   }
+  // data-wiki-title は、Wikipediaに本当にページがあるかを確かめるための目印（redlinks.ts）
   return `<a href="https://ja.wikipedia.org/wiki/${encodeURIComponent(word)}"`
-    + ' target="_blank" class="wiki-link" rel="noopener noreferrer">'
-    + `${esc(word)}</a>`;
+    + ' target="_blank" class="wiki-link" rel="noopener noreferrer"'
+    + ` data-wiki-title="${esc(word)}">${esc(word)}</a>`;
 }
 
 /** 普通の文章の中から、登録された言葉を見つけてリンクにする */

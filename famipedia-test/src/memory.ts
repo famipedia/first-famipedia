@@ -11,6 +11,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import { listPeople, loadMemory, saveMemory } from './db';
 import { esc, linkify, setLinkTargets } from './links';
+import { markMissingWikiLinks } from './redlinks';
 import { resizeImage } from './image';
 import { captureArticle, saveImage, imageFileName } from './longshot';
 import type { MemoryDoc, MemoryPhoto } from './types';
@@ -50,6 +51,9 @@ function render(): void {
 
   renderGallery();
   renderBody();
+
+  // Wikipediaに記事が無い言葉を赤リンクにする（表示のあとで問い合わせる）
+  void markMissingWikiLinks($('.doc'));
 }
 
 /** 本文。1段落目の頭はWikipediaと同じく「太字のタイトル（よみ）」で始める */
