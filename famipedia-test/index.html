@@ -92,6 +92,11 @@
         <span class="btn-label">記録する</span>
         <span class="btn-spinner" hidden></span>
       </button>
+      <!-- AIが整えている間だけ出すヒント（中身は tips.ts） -->
+      <p class="wait-tip" id="wait-tip" aria-live="polite" hidden>
+        <span class="wait-tip__label">ヒント</span>
+        <span id="wait-tip-text"></span>
+      </p>
     </div>
 
   </section>

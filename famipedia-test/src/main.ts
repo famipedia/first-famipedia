@@ -20,6 +20,7 @@ import { auth } from './firebaseConfig';
 import { listPeople } from './db';
 import { setLinkTargets } from './links';
 import { resizeImage } from './image';
+import { nextTip } from './tips';
 
 const $ = <T extends HTMLElement>(sel: string): T =>
   document.querySelector<T>(sel)!;
@@ -36,6 +37,8 @@ const elSpinner  = $<HTMLSpanElement>('.btn-spinner');
 const elBtnLabel = $<HTMLSpanElement>('.btn-label');
 const elProgress = $<HTMLDivElement>('#progress-fill');
 const elToast    = $<HTMLDivElement>('#toast');
+const elTip      = $<HTMLParagraphElement>('#wait-tip');
+const elTipText  = $<HTMLSpanElement>('#wait-tip-text');
 
 /** 今出している質問のid */
 let currentId: string | null = null;
@@ -218,6 +221,10 @@ function setBusy(on: boolean): void {
   elSave.disabled = on;
   elSpinner.hidden = !on;
   elBtnLabel.textContent = on ? 'AIが整えています…' : '記録する';
+
+  // 待っている間は、ボタンの下にヒントを1つ出す
+  if (on) elTipText.textContent = nextTip();
+  elTip.hidden = !on;
 }
 
 
