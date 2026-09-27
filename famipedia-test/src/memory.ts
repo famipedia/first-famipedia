@@ -14,7 +14,7 @@ import { esc, linkify, setLinkTargets } from './links';
 import { markMissingWikiLinks } from './redlinks';
 import { resizeImage } from './image';
 import { captureArticle, saveImage, imageFileName } from './longshot';
-import type { MemoryDoc, MemoryPhoto } from './types';
+import type { MemoryDoc, MemoryPhoto, PersonSummary } from './types';
 
 const $ = <T extends HTMLElement>(sel: string): T =>
   document.querySelector<T>(sel)!;
@@ -28,6 +28,9 @@ let memory: MemoryDoc | null = null;
 
 /** ギャラリーで大きく出している写真の番号 */
 let current = 0;
+
+/** ログイン中のアカウントの記録すべて（関連する人物を探すのに使う） */
+let allRecords: PersonSummary[] = [];
 
 
 /* ----------------------------------------------------------
@@ -51,9 +54,28 @@ function render(): void {
 
   renderGallery();
   renderBody();
+  renderRelated();
 
   // Wikipediaに記事が無い言葉を赤リンクにする（表示のあとで問い合わせる）
   void markMissingWikiLinks($('.doc'));
+}
+
+/** 関連項目：この思い出のタイトルか別の呼び名が、記事に出てくる人物。
+ *  記事の中でこのページへのリンクになる言葉と同じ決まりで探す（links.ts） */
+function renderRelated(): void {
+  const m = memory!;
+  const words = [m.title, ...m.aliases]
+    .map((w) => w.trim())
+    .filter((w) => w.length >= 2);
+
+  const people = allRecords.filter((r) =>
+    r.type === 'person' && words.some((w) => r.articleText.includes(w)));
+
+  $('#related-people').innerHTML = people.map((p) =>
+    `<li><a class="wiki-link" href="./index.html?person=${encodeURIComponent(p.id)}">`
+    + `${esc(p.name)}</a></li>`,
+  ).join('');
+  $('#related-empty').hidden = people.length > 0;
 }
 
 /** 本文。1段落目の頭はWikipediaと同じく「太字のタイトル（よみ）」で始める */
@@ -354,10 +376,16 @@ if (!memoryId) {
 }
 
 async function boot(id: string, uid: string): Promise<void> {
-  // 本文の中のほかの思い出へのリンク用。失敗してもページは開く
-  const linkTargets = listPeople(uid).then(setLinkTargets).catch((err) => {
-    console.warn('思い出の一覧を読み込めませんでした', err);
-  });
+  // 本文の中のほかの思い出へのリンクと、「関連する人物」を探すのに使う。
+  // 失敗してもページは開く（リンクと関連項目が出ないだけ）
+  const linkTargets = listPeople(uid)
+    .then((records) => {
+      allRecords = records;
+      setLinkTargets(records);
+    })
+    .catch((err) => {
+      console.warn('思い出の一覧を読み込めませんでした', err);
+    });
 
   try {
     const [m] = await Promise.all([loadMemory(id), linkTargets]);
