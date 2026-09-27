@@ -67,6 +67,7 @@ export async function listPeople(ownerId: string): Promise<PersonSummary[]> {
         answerCount: 0,
         updatedAt: m.updatedAt ?? '',
         aliases: m.aliases ?? [],
+        articleText: '',
       };
     }
 
@@ -80,6 +81,11 @@ export async function listPeople(ownerId: string): Promise<PersonSummary[]> {
       answerCount: data.answers?.length ?? 0,
       updatedAt: data.updatedAt ?? '',
       aliases: [],
+      // 記事に表示される文章（render.ts の textOf と同じ決まり。
+      // まとめ記事に吸収された回答は text が空なので、表示されない）
+      articleText: (data.answers ?? [])
+        .map((a) => (a.result ? a.result.text : a.raw) ?? '')
+        .join('\n'),
     };
   });
 

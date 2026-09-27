@@ -110,3 +110,28 @@
   min-height: 44px;
   font-size: 14px;
 }
+
+/* ---------- 関連項目（Wikipediaの「関連項目」に寄せる） ----------
+   見出しは記事ページの節見出し（.doc-section h2）と同じ明朝・下線付き。
+   小見出しは本家の h3 と同じゴシックの太字 */
+
+.related__subtitle {
+  margin: 14px 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.related__list {
+  margin: 0 0 8px;
+  padding-left: 1.6em;
+  list-style: disc;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.related__list li { margin-bottom: 2px; }
+
+.related .empty {
+  font-size: 13px;
+  color: #9aa0a6;
+}
