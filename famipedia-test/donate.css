@@ -188,15 +188,14 @@
   letter-spacing: 0.02em;
 }
 
+/* JOHNNY WORKS の「ジョ」のマーク（横長なので幅を広めに） */
 .jw-mark {
-  display: grid;
-  place-items: center;
+  display: block;
   flex: 0 0 auto;
-  width: 20px;
+  width: 30px;
   height: 20px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.25);
 }
+.jw-mark svg { display: block; width: 100%; height: 100%; }
 
 /* ---------- 支援しない（ホームに戻る） ---------- */
 
