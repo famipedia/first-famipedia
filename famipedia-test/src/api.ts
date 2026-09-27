@@ -84,9 +84,8 @@ ${historyText}
 次のJSONだけを返してください。前後に説明を付けないこと。
 
 {
-  "section": "summary | timeline のいずれか",
+  "section": "timeline",
   "year": "質問や回答の文脈から年（「1972年」など）や時期（「大学時代」など）が推測できればその文字列。無ければ null",
-  "period": "質問や回答の文脈からエピソードの年代を推測（幼少・少年期 | 青年期 | 壮年期 | 高年期）。不明なら null",
   "text": "整えた本文",
   "followUp": null
 }

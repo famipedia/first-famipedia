@@ -4,63 +4,115 @@
   "questions": [
     {
       "id": "q-nickname",
+      "category": "幼少期（0〜12歳）",
       "section": "timeline",
       "text": "子どもの頃のあだ名は何でしたか？",
       "hint": "そう呼ばれた理由も"
     },
     {
       "id": "q-collection",
+      "category": "幼少期（0〜12歳）",
       "section": "timeline",
       "text": "夢中になって集めていた物は何ですか？",
       "hint": "シール、消しゴム、カードなど"
     },
     {
       "id": "q-first-game",
+      "category": "幼少期（0〜12歳）",
       "section": "timeline",
       "text": "初めて遊んだテレビゲームは何でしたか？",
       "hint": "誰の家で遊んだかも"
     },
     {
       "id": "q-weekly-tv",
+      "category": "幼少期（0〜12歳）",
       "section": "timeline",
       "text": "毎週楽しみにしていたテレビ番組やマンガは何ですか？",
       "hint": "曜日や時間も覚えていたら"
     },
     {
       "id": "q-school-trip",
+      "category": "青年期（13〜22歳）",
       "section": "timeline",
       "text": "修学旅行はどこに行きましたか？",
       "hint": "夜の思い出も聞けたら"
     },
     {
       "id": "q-first-cd",
+      "category": "青年期（13〜22歳）",
       "section": "timeline",
       "text": "初めて買ったCDやカセットは、誰の曲でしたか？",
       "hint": "どこで買ったかも"
     },
     {
       "id": "q-parttime",
+      "category": "青年期（13〜22歳）",
       "section": "timeline",
       "text": "学生時代のアルバイトは何でしたか？",
       "hint": "時給も覚えていたら"
     },
     {
       "id": "q-first-car",
+      "category": "成人期（23〜39歳）",
       "section": "timeline",
       "text": "初めて買った車は何でしたか？",
       "hint": "何年頃か、その車でどこに行ったかも"
     },
     {
       "id": "q-first-pay",
+      "category": "成人期（23〜39歳）",
       "section": "timeline",
       "text": "初めてのお給料は、いくらでしたか？",
       "hint": "何年頃か、何に使ったかも"
     },
     {
       "id": "q-karaoke",
+      "category": "中年期（40〜64歳）",
       "section": "timeline",
       "text": "カラオケの十八番は何ですか？",
       "hint": "いつ頃から歌っているかも"
+    },
+    {
+      "id": "q-family-trip",
+      "category": "中年期（40〜64歳）",
+      "section": "timeline",
+      "text": "家族旅行で一番思い出に残っている場所はどこですか？",
+      "hint": "お子さんが小さかった頃のことなど"
+    },
+    {
+      "id": "q-retirement-hobby",
+      "category": "老年期（65歳〜）",
+      "section": "timeline",
+      "text": "最近になって新しく始めた趣味や習慣はありますか？",
+      "hint": "定年後から始めたことなど"
+    },
+    {
+      "id": "q-recent-fun",
+      "category": "老年期（65歳〜）",
+      "section": "timeline",
+      "text": "ここ数年で、一番楽しかった思い出は何ですか？",
+      "hint": "旅行や家族での出来事など"
+    },
+    {
+      "id": "q-personality",
+      "category": "その他",
+      "section": "summary",
+      "text": "ご自身の性格をひとことで表すと？",
+      "hint": "周りからよく言われることなど"
+    },
+    {
+      "id": "q-favorite-food",
+      "category": "その他",
+      "section": "summary",
+      "text": "昔からずっと好きな食べ物は何ですか？",
+      "hint": "こだわりの食べ方などもあれば"
+    },
+    {
+      "id": "q-motto",
+      "category": "その他",
+      "section": "summary",
+      "text": "大切にしている言葉や座右の銘はありますか？",
+      "hint": "人生の教訓など"
     }
   ]
 }

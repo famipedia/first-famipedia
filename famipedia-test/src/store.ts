@@ -81,9 +81,18 @@ export function findQuestion(id: string): Question | undefined {
 }
 
 /** 次に出すべき質問を決める（未回答・未スキップのうち先頭） */
-export function nextQuestion(): Question | null {
+export function nextQuestion(category: string = 'all'): Question | null {
   const done = new Set(store.answers.map((a) => a.questionId));
   const skipped = new Set(store.skipped);
+
+  // カテゴリで絞り込み
+  const isMatch = (q: Question) => {
+    if (category === 'all') return true;
+    // AIの追加質問などは、カテゴリを引き継がないかもしれないが、
+    // 追加質問(fromAi)はとりあえず親の質問から続いているので通す
+    if (q.fromAi) return true;
+    return q.category === category;
+  };
 
   // AIの追加質問を優先する。会話の流れが途切れないように
   const extra = store.extraQuestions.find(
@@ -91,7 +100,7 @@ export function nextQuestion(): Question | null {
   if (extra) return extra;
 
   return BASE_QUESTIONS.find(
-    (q) => !done.has(q.id) && !skipped.has(q.id)) ?? null;
+    (q) => !done.has(q.id) && !skipped.has(q.id) && isMatch(q)) ?? null;
 }
 
 /** 回答を1件足す */

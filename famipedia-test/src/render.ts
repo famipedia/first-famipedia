@@ -92,29 +92,8 @@ export function mapToOfficialPeriod(p: string, y?: string): string {
 }
 
 export function sectionOf(a: Answer): SectionId {
-  // 以前の「人物・エピソード」「伝えたいこと」など、summary以外のものは一旦すべてタイムライン扱いにする
   const sec = a.result?.section ?? findQuestion(a.questionId)?.section;
-  const baseSec = sec === 'summary' ? 'summary' : 'timeline';
-
-  if (baseSec === 'timeline') {
-    const y = a.result?.year || '';
-    let p = a.result?.period || '';
-    
-    // 期間が明示されていない場合、年号などから推測
-    if (!p) {
-      const yNum = y ? Number(y.match(/\d+/)?.[0]) : null;
-      if (yNum !== null) p = getPeriod(yNum, getBirthYear());
-      else if (y && y !== '時期不明' && y !== '不明') p = y;
-      else p = '時期不明';
-    }
-
-    // 4つの時期のどれにも分類できない場合は概要に入れる
-    if (mapToOfficialPeriod(p, y) === '時期不明') {
-      return 'summary';
-    }
-  }
-
-  return baseSec;
+  return sec === 'summary' ? 'summary' : 'timeline';
 }
 
 /** 記事に載せる文章 */
@@ -240,22 +219,16 @@ function renderTimeline(items: Answer[], highlightId?: string): string {
     // 両方とも年号があればそれで比較
     if (nx !== 9999 && ny !== 9999) return nx - ny;
     
-    // なければ期間の並び順で比較
+    // なければカテゴリの並び順で比較
     const getOrder = (a: typeof x) => {
-      let p = a.a.result?.period;
-      if (!p) {
-        const yNum = a.year ? Number(a.year.match(/\d+/)?.[0]) : null;
-        if (yNum !== null) p = getPeriod(yNum, birthYear);
-        else if (a.year && a.year !== '時期不明' && a.year !== '不明') p = a.year;
-        else p = '時期不明';
-      }
-      
-      const official = mapToOfficialPeriod(p, a.year ?? '');
-      if (official === '幼少・少年期') return 10;
-      if (official === '青年期') return 20;
-      if (official === '壮年期') return 40;
-      if (official === '高年期') return 60;
-      return 20;
+      const q = findQuestion(a.a.questionId);
+      const cat = q?.category ?? '';
+      if (cat.includes('幼少')) return 10;
+      if (cat.includes('青年')) return 20;
+      if (cat.includes('成人')) return 30;
+      if (cat.includes('中年')) return 40;
+      if (cat.includes('老年')) return 50;
+      return 90;
     };
     
     return getOrder(x) - getOrder(y);
@@ -266,15 +239,10 @@ function renderTimeline(items: Answer[], highlightId?: string): string {
   const htmlParts: string[] = [];
 
   rows.forEach(({ a, year, text }) => {
-    const yNum = year ? Number(year.match(/\d+/)?.[0]) : null;
-    let period = a.result?.period;
-    if (!period) {
-      if (yNum !== null) period = getPeriod(yNum, birthYear);
-      else if (year && year !== '時期不明' && year !== '不明') period = year;
-      else period = '時期不明';
-    }
-    // 見出しを強制的に4つのいずれかに限定
-    period = mapToOfficialPeriod(period, year ?? '');
+    const q = findQuestion(a.questionId);
+    let period = q?.category ?? '時期不明';
+    // 「青年期（13〜22歳）」のような表記から「青年期」だけ取り出す
+    period = period.split('（')[0];
 
     if (period !== currentPeriod) {
       if (currentPeriod !== '') {

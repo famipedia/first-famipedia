@@ -26,6 +26,8 @@ export interface Question {
   text: string;
   hint?: string;
   section: SectionId;
+  /** 質問のカテゴリ（例: "幼少期", "青年期" など） */
+  category?: string;
   /** 基礎情報ボックスのどの欄に入れるか */
   field?: keyof PersonInfo;
   /** true なら基礎情報にだけ使い、本文には載せない */

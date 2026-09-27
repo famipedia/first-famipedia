@@ -39,6 +39,7 @@ const elProgress = $<HTMLDivElement>('#progress-fill');
 const elToast    = $<HTMLDivElement>('#toast');
 const elTip      = $<HTMLParagraphElement>('#wait-tip');
 const elTipText  = $<HTMLSpanElement>('#wait-tip-text');
+const elCategory = $<HTMLSelectElement>('#ask-category');
 
 /** 今出している質問のid */
 let currentId: string | null = null;
@@ -52,7 +53,8 @@ let busy = false;
    ---------------------------------------------------------- */
 
 function showQuestion(): void {
-  const q = nextQuestion();
+  const category = elCategory ? elCategory.value : 'all';
+  const q = nextQuestion(category);
 
   // 進み具合のバー
   elProgress.style.width = `${Math.round(progress() * 100)}%`;
@@ -165,7 +167,8 @@ async function handleSave(): Promise<void> {
   if (followUpText) addFollowUp(followUpText, q.id);
 
   // 次の質問が別のトピック（別の基本質問）になる場合、これまでのQ&Aをまとめて記事化する
-  const nextQ = nextQuestion();
+  const category = elCategory ? elCategory.value : 'all';
+  const nextQ = nextQuestion(category);
   const currentParentId = q.id.split('-fu-')[0];
   const nextParentId = nextQ ? nextQ.id.split('-fu-')[0] : null;
 
@@ -192,13 +195,17 @@ async function triggerSummarize(parentId: string) {
   try {
     const summary = await generateArticleSummary(history, store.info);
     
+    // AIの判定に任せず、元の質問で定義された section を強制する
+    const parentQuestion = findQuestion(parentId);
+    const originalSection = parentQuestion?.section ?? 'timeline';
+
     // 最初の回答の result としてまとめ記事を保存
     if (topicAnswers[0].result) {
-      topicAnswers[0].result.section = summary.section;
+      topicAnswers[0].result.section = originalSection;
       topicAnswers[0].result.year = summary.year;
       topicAnswers[0].result.text = summary.text;
     } else {
-      topicAnswers[0].result = summary;
+      topicAnswers[0].result = { ...summary, section: originalSection };
     }
     
     // 2回目以降の回答（FollowUp）は画面に出さないようにテキストを空にしておく
@@ -278,6 +285,12 @@ elSkip.addEventListener('click', () => {
   save();
   showQuestion();
 });
+
+if (elCategory) {
+  elCategory.addEventListener('change', () => {
+    showQuestion();
+  });
+}
 
 // Ctrl（⌘）+ Enter でも記録できる
 elInput.addEventListener('keydown', (e: KeyboardEvent) => {

@@ -282,6 +282,18 @@ a { color: var(--wiki-link); }
   margin-bottom: 14px;
 }
 
+.ask-category {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid var(--wiki-line-l);
+  border-radius: 6px;
+  background: var(--wiki-bg);
+  color: var(--wiki-text);
+  margin-left: 10px;
+  margin-right: auto;
+}
+
 .ask-step {
   font-size: 12px;
   font-weight: 600;
