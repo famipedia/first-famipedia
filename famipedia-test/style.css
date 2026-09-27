@@ -290,8 +290,6 @@ a { color: var(--wiki-link); }
   border-radius: 6px;
   background: var(--wiki-bg);
   color: var(--wiki-text);
-  margin-left: 10px;
-  margin-right: auto;
 }
 
 .ask-step {
