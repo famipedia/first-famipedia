@@ -413,7 +413,7 @@ $('#modal-ok').addEventListener('click', () => {
   render();
   showQuestion();
   closeModal();
-  toast('記録を消しました');
+  toast('記録をリセットしました');
 });
 
 

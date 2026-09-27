@@ -30,7 +30,7 @@
     <a href="./people.html" class="link-btn">記録一覧</a>
     <button id="btn-article-edit" class="link-btn">編集する</button>
     <a href="./donate.html" class="link-btn">寄付する</a>
-    <button id="btn-clear"  class="link-btn">最初から</button>
+    <button id="btn-clear"  class="link-btn">リセット</button>
     <button id="btn-logout" class="link-btn">ログアウト</button>
   </div>
 </header>
@@ -194,13 +194,14 @@
      ============================================================ -->
 <div class="modal" id="modal" hidden>
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <p class="modal-title" id="modal-title">記録をすべて消します</p>
+    <p class="modal-title" id="modal-title">質問の回答をリセットします</p>
     <p class="modal-text">
+      これまでの回答がすべて消えます（基本情報は残ります）。<br>
       この操作は取り消せません。
     </p>
     <div class="modal-actions">
       <button type="button" class="btn" id="modal-cancel">やめる</button>
-      <button type="button" class="btn btn-danger" id="modal-ok">すべて消す</button>
+      <button type="button" class="btn btn-danger" id="modal-ok">リセットする</button>
     </div>
   </div>
 </div>

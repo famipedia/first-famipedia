@@ -62,7 +62,7 @@ export function save(): void {
  *  （記録そのもの＝ドキュメントは消さず、中身だけ空にします） */
 export function clearAll(): void {
   const empty = emptyStore();
-  store.info = empty.info;
+  // store.info はリセットせず残す
   store.answers = empty.answers;
   store.photo = empty.photo;
   store.skipped = empty.skipped;
