@@ -9,6 +9,7 @@ import type { SectionId, Answer } from './types';
 import { store, findQuestion } from './store';
 import { updateDonateBanner } from './donateBanner';
 import { linkify } from './links';
+import { markMissingWikiLinks } from './redlinks';
 
 export const SECTIONS: SectionId[] = ['summary', 'timeline'];
 
@@ -208,6 +209,9 @@ export function render(highlightId?: string): void {
 
   // 記録が2件たまったら、ヘッダーの下に寄付の帯を出す
   updateDonateBanner(count);
+
+  // Wikipediaに記事が無い言葉を赤リンクにする（表示のあとで問い合わせる）
+  void markMissingWikiLinks($('#pane-doc'));
 }
 
 

@@ -918,3 +918,74 @@ a { color: var(--wiki-link); }
 .wiki-link:hover {
   text-decoration: underline;
 }
+
+/* ==========================================================
+   Wikipedia風のダイアログ（記録の削除、赤リンクから思い出を作る など）
+   角はほぼ四角、見出しは太字、Wikipediaと同じ形のボタン
+   ========================================================== */
+
+.wiki-dialog {
+  max-width: 400px;
+  padding: 0;
+  border: 1px solid var(--wiki-line);
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.wiki-dialog__title {
+  padding: 16px 20px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.wiki-dialog__text {
+  padding: 12px 20px 20px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.wiki-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid #eaecf0;
+}
+
+.wiki-btn {
+  min-height: 36px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--wiki-text);
+  background: #f8f9fa;
+  border: 1px solid #a2a9b1;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.wiki-btn:hover { background: var(--wiki-white); }
+.wiki-btn:focus-visible { outline: 2px solid var(--wiki-link); outline-offset: 1px; }
+
+.wiki-btn--destructive {
+  color: #fff;
+  background: #d73333;
+  border-color: #d73333;
+}
+.wiki-btn--destructive:hover { background: #b32424; border-color: #b32424; }
+.wiki-btn:disabled { opacity: 0.6; cursor: default; }
+
+/* 「作る」などの前に進むボタン（Wikipediaの青いボタン） */
+.wiki-btn--progressive {
+  color: #fff;
+  background: #3366cc;
+  border-color: #3366cc;
+}
+.wiki-btn--progressive:hover { background: #2a4b8d; border-color: #2a4b8d; }
+
+/* ==========================================================
+   赤リンク：Wikipediaにページが無い言葉
+   本家と同じく赤で表示し、押すと思い出ページを作れるようにする
+   ========================================================== */
+.wiki-link.is-new { color: #d73333; }
+.wiki-link.is-new:visited { color: #a55858; }
