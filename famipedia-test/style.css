@@ -396,6 +396,32 @@ a { color: var(--wiki-link); }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* AIが整えている間、「記録する」の下に出すヒント（tips.ts） */
+.wait-tip {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  /* ボタンとの間を少し空ける */
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--wiki-muted);
+  animation: tip-in 0.3s ease-out;
+}
+.wait-tip__label {
+  flex: 0 0 auto;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: #e8f2ea;
+  border-radius: 999px;
+}
+@keyframes tip-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
 /* ==========================================================
    記事ページ
    ========================================================== */
